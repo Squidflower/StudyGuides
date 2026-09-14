@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Guides — Cisco IT Support, Networking &amp; Cybersecurity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #eef1f6;
+    --surface: #ffffff;
+    --ink: #16202e;
+    --muted: #5b6b7f;
+    --rule: #dbe1ea;
+    --rule-strong: #c4cdd9;
+    --support: #e08a2b;
+    --networking: #2f86c9;
+    --security: #cf4a56;
+    --focus: #2f86c9;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 6vw, 5rem) clamp(1.25rem, 5vw, 2rem) 4rem;
+  }
+
+  header { margin-bottom: 2.75rem; }
+
+  h1 {
+    font-size: clamp(2rem, 6vw, 2.9rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.6rem;
+  }
+
+  .lede {
+    font-size: clamp(1rem, 2.4vw, 1.15rem);
+    color: var(--muted);
+    max-width: 46ch;
+    margin: 0;
+  }
+
+  .guides {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .guide {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 5px solid var(--edge, var(--rule-strong));
+    border-radius: 10px;
+    padding: 1.35rem 1.5rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  }
+
+  .guide:hover {
+    box-shadow: 0 6px 22px rgba(22, 32, 46, 0.1);
+    transform: translateY(-2px);
+    border-color: var(--rule-strong);
+    border-left-color: var(--edge);
+  }
+
+  .guide:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .guide[data-track="support"]     { --edge: var(--support); }
+  .guide[data-track="networking"]  { --edge: var(--networking); }
+  .guide[data-track="security"]    { --edge: var(--security); }
+
+  .guide-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .guide-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .cert {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--edge, var(--muted));
+  }
+
+  .guide-desc {
+    margin: 0.4rem 0 0;
+    color: var(--muted);
+    font-size: 0.97rem;
+    max-width: 54ch;
+  }
+
+  .open {
+    display: inline-block;
+    margin-top: 0.9rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink);
+    border-bottom: 2px solid var(--edge, var(--ink));
+    padding-bottom: 1px;
+  }
+
+  footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .guide { transition: none; }
+    .guide:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Study Guides</h1>
+      <p class="lede">Prep material for the Cisco IT Support and Networking certifications, plus a cybersecurity course. Pick a track to get started.</p>
+    </header>
+
+    <main class="guides">
+      <a class="guide" data-track="support" href="CCST_IT_Support_Study_Guide.html">
+        <div class="guide-head">
+          <span class="guide-title">IT Support</span>
+          <span class="cert">CCST IT Support</span>
+        </div>
+        <p class="guide-desc">Hardware, operating systems, and the troubleshooting steps a help-desk technician uses every day.</p>
+        <span class="open">Open guide</span>
+      </a>
+
+      <a class="guide" data-track="networking" href="CCST_Networking_Study_Guide.html">
+        <div class="guide-head">
+          <span class="guide-title">Networking</span>
+          <span class="cert">CCST Networking</span>
+        </div>
+        <p class="guide-desc">Addressing, protocols, and how data actually moves from one device to another across a network.</p>
+        <span class="open">Open guide</span>
+      </a>
+
+      <a class="guide" data-track="security" href="Cisco-Netacad-Cybersecurity.html">
+        <div class="guide-head">
+          <span class="guide-title">Cybersecurity</span>
+          <span class="cert">Cisco Netacad</span>
+        </div>
+        <p class="guide-desc">Common threats, defensive techniques, and the fundamentals of keeping systems and data secure.</p>
+        <span class="open">Open guide</span>
+      </a>
+    </main>
+
+    <footer>
+      Built for Cisco IT Support, Networking, and CyberSecurity cert exams.
+    </footer>
+  </div>
+</body>
+</html>
