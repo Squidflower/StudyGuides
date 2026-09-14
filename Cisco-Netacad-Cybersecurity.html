@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cybersecurity Essentials 3.0 — Study Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0e141b; --bg-2:#0b1017; --panel:#161f2b; --panel-2:#1b2734;
+    --line:#26313f; --line-soft:#1f2a36; --text:#dfe7ee; --muted:#8b9bab; --muted-2:#647585;
+    --cyan:#54c6d8; --cyan-dim:#2f6f7a; --amber:#e0a458; --green:#5ec98c; --red:#e56a7a;
+    --shadow:0 10px 30px -12px rgba(0,0,0,.6); --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto;}}
+  body{
+    margin:0;
+    background:
+      radial-gradient(900px 500px at 82% -8%, rgba(84,198,216,.08), transparent 60%),
+      radial-gradient(700px 400px at -5% 8%, rgba(224,164,88,.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:'Inter',system-ui,sans-serif; font-size:15px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--cyan);text-decoration:none;}
+  code,.mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.86em;background:var(--bg-2);border:1px solid var(--line-soft);padding:1px 5px;border-radius:5px;color:#cfe9ee;}
+
+  .wrap{display:grid;grid-template-columns:280px 1fr;min-height:100vh;}
+  aside{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;
+    background:linear-gradient(180deg,var(--bg-2),var(--bg));border-right:1px solid var(--line);padding:26px 18px 40px;}
+  main{min-width:0;padding:0 clamp(20px,4vw,64px) 120px;}
+
+  .brand{display:flex;align-items:baseline;gap:9px;margin-bottom:4px;}
+  .brand .dot{width:9px;height:9px;border-radius:2px;background:var(--cyan);box-shadow:0 0 12px var(--cyan);flex:none;transform:translateY(-1px);}
+  .brand h1{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;letter-spacing:.2px;margin:0;}
+  .brand .v{color:var(--muted-2);font-family:'JetBrains Mono',monospace;font-size:11px;}
+  .sub{color:var(--muted);font-size:12px;margin:0 0 22px;padding-left:18px;}
+
+  nav .navgroup{font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:1px;color:var(--muted-2);margin:20px 0 8px;text-transform:uppercase;}
+  nav a{display:flex;gap:11px;align-items:flex-start;color:var(--muted);font-size:13.5px;line-height:1.35;
+    padding:8px 10px;border-radius:8px;margin:2px 0;border:1px solid transparent;transition:background .15s,color .15s,border-color .15s;}
+  nav a:hover{background:var(--panel);color:var(--text);}
+  nav a.active{background:var(--panel-2);color:var(--text);border-color:var(--line);}
+  nav a .cp{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);flex:none;width:30px;padding-top:1px;}
+  nav a.active .cp{color:var(--amber);}
+
+  header.hero{padding:52px 0 30px;border-bottom:1px solid var(--line);margin-bottom:8px;}
+  .kicker{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);margin:0 0 14px;}
+  .hero h2{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:clamp(28px,4vw,44px);line-height:1.08;margin:0 0 16px;letter-spacing:-.4px;}
+  .hero p.lead{color:var(--muted);max-width:64ch;font-size:16px;margin:0 0 26px;}
+  .stats{display:flex;flex-wrap:wrap;gap:14px;}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 18px;min-width:120px;}
+  .stat b{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:600;display:block;line-height:1;}
+  .stat span{color:var(--muted);font-size:12px;}
+  .stat.live b{color:var(--cyan);}
+
+  section.cp{padding:44px 0 8px;border-bottom:1px solid var(--line-soft);scroll-margin-top:14px;}
+  .cp-head{display:flex;align-items:center;gap:14px;margin-bottom:6px;}
+  .cp-badge{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--bg);background:var(--cyan);padding:3px 9px;border-radius:6px;font-weight:500;}
+  .cp-range{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted-2);}
+  section.cp h3{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:600;margin:2px 0 4px;letter-spacing:-.2px;}
+  .cp-note{color:var(--muted);font-size:13.5px;margin:0 0 22px;}
+
+  .mod{border-left:2px solid var(--line);padding:0 0 6px 22px;margin:0 0 30px;position:relative;}
+  .mod::before{content:"";position:absolute;left:-5px;top:6px;width:8px;height:8px;border-radius:50%;background:var(--panel-2);border:2px solid var(--cyan-dim);}
+  .mod h4{font-family:'Space Grotesk',sans-serif;font-size:16.5px;font-weight:600;margin:0 0 8px;display:flex;gap:10px;align-items:baseline;}
+  .mod h4 .num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);flex:none;}
+  .mod .intro{color:var(--muted);margin:0 0 14px;font-size:14px;}
+  .concept{margin:12px 0;}
+  .concept .ct{color:var(--cyan);font-weight:600;}
+  .concept.amber .ct{color:var(--amber);}
+  .concept p{margin:2px 0 0;color:#c7d2dc;}
+  .mod ul{margin:6px 0 0;padding-left:18px;}
+  .mod li{margin:4px 0;color:#c7d2dc;}
+  .mod li b{color:var(--text);font-weight:600;}
+  .subh{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;color:var(--text);margin:16px 0 4px;}
+  .watch{background:rgba(224,164,88,.08);border:1px solid rgba(224,164,88,.28);border-radius:8px;padding:10px 14px;margin-top:14px;font-size:13.5px;color:#f0d5ab;}
+  .watch b{color:var(--amber);}
+
+  .tablewrap{overflow-x:auto;margin:6px 0 4px;border:1px solid var(--line);border-radius:var(--radius);}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:420px;}
+  caption{text-align:left;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;color:var(--text);padding:16px 0 10px;}
+  th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top;}
+  thead th{background:var(--panel-2);color:var(--cyan);font-weight:600;font-size:12px;letter-spacing:.3px;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:nth-child(even){background:rgba(255,255,255,.015);}
+
+  .quiz{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 22px 8px;margin:30px 0 6px;box-shadow:var(--shadow);}
+  .quiz-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px;}
+  .quiz-top h4{font-family:'Space Grotesk',sans-serif;font-size:17px;margin:0;display:flex;align-items:center;gap:9px;}
+  .quiz-top h4 svg{flex:none;}
+  .score{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--muted);background:var(--bg-2);border:1px solid var(--line);padding:5px 11px;border-radius:20px;}
+  .score b{color:var(--cyan);}
+  .q{padding:16px 0;border-top:1px solid var(--line-soft);}
+  .q:first-of-type{border-top:none;}
+  .q .qtext{font-weight:500;margin:0 0 12px;color:var(--text);}
+  .q .qtext .qn{font-family:'JetBrains Mono',monospace;color:var(--cyan);font-size:13px;margin-right:8px;}
+  .opts{display:flex;flex-direction:column;gap:8px;}
+  .opt{text-align:left;font:inherit;color:var(--text);cursor:pointer;background:var(--bg-2);border:1px solid var(--line);border-radius:9px;
+    padding:11px 14px;display:flex;gap:11px;align-items:flex-start;transition:border-color .15s,background .15s;}
+  .opt:hover:not(:disabled){border-color:var(--cyan-dim);background:var(--panel-2);}
+  .opt:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;}
+  .opt .key{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);flex:none;width:16px;padding-top:1px;}
+  .opt:disabled{cursor:default;}
+  .opt.correct{border-color:var(--green);background:rgba(94,201,140,.12);}
+  .opt.correct .key{color:var(--green);}
+  .opt.wrong{border-color:var(--red);background:rgba(229,106,122,.12);}
+  .opt.wrong .key{color:var(--red);}
+  .opt .mark{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:12px;flex:none;}
+  .opt.correct .mark{color:var(--green);}
+  .opt.wrong .mark{color:var(--red);}
+  .explain{margin-top:11px;font-size:13.5px;color:#cdd7e1;background:var(--bg-2);border-left:3px solid var(--cyan-dim);border-radius:0 8px 8px 0;padding:10px 14px;display:none;}
+  .explain.show{display:block;}
+  .explain b{color:var(--cyan);}
+  .quiz-actions{padding:14px 0 12px;display:flex;justify-content:flex-end;}
+  .reset{font:inherit;font-size:13px;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:8px;padding:7px 14px;cursor:pointer;transition:color .15s,border-color .15s;}
+  .reset:hover{color:var(--text);border-color:var(--cyan-dim);}
+  .reset:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;}
+
+  footer{padding:40px 0 0;color:var(--muted);font-size:13px;}
+  footer h3{font-family:'Space Grotesk',sans-serif;color:var(--text);font-size:18px;margin:0 0 10px;}
+  footer ul{padding-left:18px;}
+  footer li{margin:5px 0;}
+
+  .menubtn{display:none;}
+  @media (max-width:880px){
+    .wrap{grid-template-columns:1fr;}
+    aside{position:fixed;z-index:40;width:280px;left:0;top:0;transform:translateX(-100%);transition:transform .22s ease;box-shadow:var(--shadow);}
+    aside.open{transform:translateX(0);}
+    main{padding-top:64px;}
+    .menubtn{display:flex;align-items:center;gap:8px;position:fixed;z-index:50;top:12px;left:12px;
+      background:var(--panel-2);border:1px solid var(--line);color:var(--text);font:inherit;font-size:13px;padding:8px 13px;border-radius:9px;cursor:pointer;font-family:'Space Grotesk',sans-serif;}
+    .scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:30;}
+    .scrim.open{display:block;}
+  }
+</style>
+</head>
+<body>
+<button class="menubtn" id="menubtn" aria-label="Toggle navigation">☰ Contents</button>
+<div class="scrim" id="scrim"></div>
+<div class="wrap">
+
+  <aside id="side">
+    <div class="brand"><span class="dot"></span><h1>Cybersecurity Essentials</h1></div>
+    <p class="sub"><span class="v">v3.0 · 27 modules · CCST-aligned</span></p>
+    <nav id="nav">
+      <div class="navgroup">Overview</div>
+      <a href="#top"><span class="cp">◇</span><span>Course map &amp; how to study</span></a>
+      <div class="navgroup">Checkpoints</div>
+      <a href="#cp1"><span class="cp">CP1</span><span>Network Security · M1–6</span></a>
+      <a href="#cp2"><span class="cp">CP2</span><span>OS &amp; Endpoint Security · M7–10</span></a>
+      <a href="#cp3"><span class="cp">CP3</span><span>Principles, Practices &amp; Processes · M11–13</span></a>
+      <a href="#cp4"><span class="cp">CP4</span><span>Firewalls, Cryptography &amp; Cloud · M14–18</span></a>
+      <a href="#cp5"><span class="cp">CP5</span><span>Evaluating Security Alerts · M19–21</span></a>
+      <a href="#cp6"><span class="cp">CP6</span><span>Vulnerability Assessment &amp; Risk · M22–26</span></a>
+      <a href="#cp7"><span class="cp">CP7</span><span>Incident Response · M27</span></a>
+      <div class="navgroup">Reference</div>
+      <a href="#tables"><span class="cp">▤</span><span>Quick-reference tables</span></a>
+      <a href="#strategy"><span class="cp">✎</span><span>Exam strategy</span></a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero" id="top">
+      <p class="kicker">Cisco Networking Academy · Final exam ≈ 50 questions · pass ≥ 70%</p>
+      <h2>Your study console for Cybersecurity Essentials 3.0</h2>
+      <p class="lead">Every module explained in depth and grouped the way the checkpoint exams are bundled, with an interactive quiz at the end of each group that grades you and explains every answer. Read a checkpoint, then test it; the counters below track your progress.</p>
+      <div class="stats">
+        <div class="stat"><b>27</b><span>modules</span></div>
+        <div class="stat"><b>7</b><span>checkpoint exams</span></div>
+        <div class="stat live"><b id="answered">0</b><span>questions answered</span></div>
+        <div class="stat live"><b id="totalscore">0%</b><span>overall accuracy</span></div>
+      </div>
+    </header>
+
+    <!-- ============ CP1 ============ -->
+    <section class="cp" id="cp1">
+      <div class="cp-head"><span class="cp-badge">CP1</span><span class="cp-range">Modules 1–6</span></div>
+      <h3>Network Security</h3>
+      <p class="cp-note">Who attacks networks and why, the malware and social-engineering they use, the weaknesses in TCP/IP itself, and the devices that defend the perimeter.</p>
+
+      <div class="mod"><h4><span class="num">M1</span>Cybersecurity Threats, Vulnerabilities, and Attacks</h4>
+        <p class="intro">A <b>threat</b> is a potential danger, a <b>vulnerability</b> is a weakness that a threat can exploit, and an <b>attack</b> is the act of exploiting it. Security exists to protect the value of data, so the module starts by classifying who the attackers are and what tools they use.</p>
+        <div class="concept"><span class="ct">Threat actors</span><p>Ranked roughly by skill and motive: <b>script kiddies</b> (little skill, borrowed tools), <b>hacktivists</b> (political/social motive), <b>organized crime</b> (financial motive, professional), <b>state-sponsored</b> actors (espionage, sabotage of critical infrastructure), and <b>insiders</b> (employees/contractors whose existing access makes them especially dangerous). The old "hat" labels still appear: <b>white hat</b> (authorized/ethical), <b>gray hat</b> (unauthorized but non-malicious disclosure), <b>black hat</b> (malicious, illegal).</p></div>
+        <div class="concept"><span class="ct">Malware families</span><p>A <b>virus</b> attaches to a host file and needs a user to run it to spread. A <b>worm</b> is self-contained and self-propagates across networks with no host and no user action — which is why worms spread far faster. A <b>Trojan</b> hides malicious function inside something that looks legitimate. A <b>rootkit</b> buries itself at the OS/kernel level to hide and keep privileged access. <b>Ransomware</b> encrypts data for extortion; <b>spyware/adware</b> monitor or serve ads; a <b>logic bomb</b> waits for a trigger (a date or event); a <b>backdoor/RAT</b> gives covert remote access.</p></div>
+        <div class="concept"><span class="ct">Social engineering</span><p>Attacks that manipulate <em>people</em> rather than machines. <b>Phishing</b> is mass fraudulent email; <b>spear phishing</b> is targeted; <b>whaling</b> targets executives; <b>vishing</b> uses voice calls; <b>smishing</b> uses SMS. <b>Pretexting</b> invents a believable scenario, <b>tailgating</b> follows someone through a secure door, and <b>dumpster diving</b> harvests discarded information.</p></div>
+        <div class="concept"><span class="ct">Network-based attacks</span><p><b>DoS</b> overwhelms a service from one source; <b>DDoS</b> uses a <b>botnet</b> of compromised "zombie" hosts coordinated by a handler. <b>Man-in-the-middle (MitM)</b> secretly relays/alters traffic between two parties. <b>Spoofing</b> falsifies identity at the IP, MAC, ARP, or DNS level.</p></div>
+        <div class="concept"><span class="ct">The CIA triad (introduced here)</span><p><b>Confidentiality</b> keeps data secret from the unauthorized, <b>integrity</b> keeps it accurate and unaltered, and <b>availability</b> keeps it accessible when needed. Every control in the course maps back to one of these three goals.</p></div>
+        <div class="watch"><b>Watch for:</b> virus vs. worm hinges on two things — a worm self-replicates and needs no host file or user action. And remember social engineering exploits human trust, not a software flaw.</div>
+      </div>
+
+      <div class="mod"><h4><span class="num">M2</span>Securing Networks</h4>
+        <p class="intro">Introduces the mindset and building blocks of defense — thinking about the whole attack surface rather than a single wall.</p>
+        <div class="concept"><span class="ct">Attack surface</span><p>The sum of all points where an attacker could try to get in, across three dimensions: the <b>network</b> surface (open ports, exposed services), the <b>software</b> surface (application code, APIs), and the <b>human</b> surface (users susceptible to social engineering). Good security shrinks each of these.</p></div>
+        <div class="concept"><span class="ct">Defense-in-depth</span><p>No single control is trusted to stop everything, so defenses are <b>layered</b> — if one fails, another still stands. The course contrasts the <b>security onion</b> (peel back layer after layer of protection) with the <b>security artichoke</b> (a modern reality where attackers can pull off individual "leaves" to reach the core without going through every layer).</p></div>
+        <div class="concept"><span class="ct">Security devices &amp; the SOC</span><p>Core tools include <b>firewalls</b>, <b>IDS/IPS</b>, <b>VPN</b> gateways, <b>proxies</b>, and <b>NAC</b> (network access control). A <b>Security Operations Center (SOC)</b> staffs analysts in tiers who monitor, triage, and respond using documented <b>playbooks</b>.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">M3</span>Attacking the Foundation</h4>
+        <p class="intro">TCP/IP was designed for connectivity, not security, so many attacks exploit the protocols themselves.</p>
+        <div class="concept"><span class="ct">The TCP three-way handshake</span><p>TCP is <b>connection-oriented</b>: a client sends <code>SYN</code>, the server replies <code>SYN-ACK</code>, and the client confirms with <code>ACK</code> before data flows. Because the server allocates resources on the first SYN, this handshake can be abused.</p></div>
+        <div class="concept"><span class="ct">TCP vs. UDP attacks</span><p>A <b>SYN flood</b> sends many SYNs but never completes the handshake, filling the server's connection table. <b>Session hijacking</b> and <b>TCP reset (RST)</b> attacks tamper with an established session. <b>UDP</b> is <b>connectionless</b> (no handshake), so a <b>UDP flood</b> simply drowns the target in traffic.</p></div>
+        <div class="concept"><span class="ct">Address- and name-layer attacks</span><p><b>ARP spoofing/poisoning</b> lets an attacker associate their MAC with another host's IP to intercept LAN traffic. <b>DNS attacks</b> include spoofing, cache poisoning, and tunneling (smuggling data inside DNS). <b>DHCP spoofing/starvation</b> hands victims a rogue gateway/DNS or exhausts the address pool. <b>ICMP</b> is abused for reconnaissance (ping sweeps) and tunneling.</p></div>
+        <div class="watch"><b>Watch for:</b> know which attacks rely on TCP being connection-oriented (SYN flood, hijacking, RST) versus UDP being connectionless (UDP flood).</div>
+      </div>
+
+      <div class="mod"><h4><span class="num">M4</span>Attacking What We Do</h4>
+        <p class="intro">Moves up the stack to the applications, web services, and credentials people use every day.</p>
+        <div class="concept"><span class="ct">Application &amp; memory attacks</span><p>A <b>buffer overflow</b> writes past a memory boundary to overwrite adjacent data or inject code, often enabling <b>remote code execution</b>. Poor <b>input validation</b> is the root cause of most of these.</p></div>
+        <div class="concept"><span class="ct">Web attacks</span><p><b>SQL injection</b> inserts malicious database commands through unvalidated input. <b>Cross-site scripting (XSS)</b> injects scripts that run in other users' browsers. <b>CSRF</b> tricks a logged-in user's browser into making unwanted requests. <b>Directory traversal</b> reaches files outside the intended web folder.</p></div>
+        <div class="concept"><span class="ct">Credential attacks</span><p><b>Brute force</b> tries every combination; a <b>dictionary</b> attack tries likely words; <b>rainbow tables</b> reverse unsalted hashes; <b>password spraying</b> tries one common password across many accounts to dodge lockouts; <b>pass-the-hash</b> reuses a captured hash without cracking it.</p></div>
+        <div class="concept"><span class="ct">Advanced Persistent Threat (APT)</span><p>A well-resourced adversary that establishes a stealthy, long-term foothold and moves in multiple phases, prioritizing persistence and evasion over quick payoff.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">M5</span>Wireless Network Communication</h4>
+        <p class="intro">Radio is a shared, invisible medium anyone in range can listen to, so wireless needs strong encryption and authentication.</p>
+        <div class="concept"><span class="ct">Wi-Fi security evolution</span><p><b>WEP</b> is broken and must never be used. <b>WPA</b> improved on it but is dated. <b>WPA2</b> uses <b>AES/CCMP</b> and is the modern baseline; <b>WPA3</b> adds stronger key exchange and protection for open networks.</p></div>
+        <div class="concept"><span class="ct">Wireless threats</span><p>A <b>rogue AP</b> is an unauthorized access point on your network; an <b>evil twin</b> impersonates a legitimate SSID to harvest connections. <b>Deauthentication</b> attacks force clients off to capture handshakes, <b>jamming</b> denies service, and <b>war driving</b> maps vulnerable networks. Bluetooth has <b>bluejacking</b> (unsolicited messages) and <b>bluesnarfing</b> (data theft).</p></div>
+        <div class="concept amber"><span class="ct">Weak "controls" that aren't real security</span><p><b>Hiding the SSID</b> and <b>MAC address filtering</b> are trivially bypassed — SSIDs still appear in client probes and MACs are easily spoofed. Genuine protection comes from WPA2/WPA3 encryption and strong authentication.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">M6</span>Network Security Infrastructure</h4>
+        <p class="intro">The physical and logical devices that enforce policy at the network boundary and inside it.</p>
+        <div class="concept"><span class="ct">Topology &amp; the DMZ</span><p>A <b>DMZ</b> (screened subnet) is a buffer network for public-facing servers (web, mail) that sits between the internet and the trusted internal network, so a compromised public server doesn't directly expose the inside.</p></div>
+        <div class="concept"><span class="ct">IDS vs. IPS</span><p>An <b>IDS</b> sits <b>out-of-band</b> (analyzing a copy of traffic) and can only <b>detect and alert</b> — it never blocks, so it can't slow traffic but also can't stop an attack in progress. An <b>IPS</b> sits <b>inline</b> and can <b>detect and drop</b> malicious packets, at the risk of blocking legitimate traffic if mistuned.</p></div>
+        <div class="concept"><span class="ct">Consolidated appliances</span><p><b>NGFW</b> (next-gen firewall) adds application awareness and IPS; <b>UTM</b> bundles firewall, antivirus, filtering, and VPN in one box; <b>content filters</b> and <b>VPN gateways</b> round out the perimeter. ACLs on routers provide basic traffic filtering (demonstrated in Packet Tracer).</p></div>
+      </div>
+
+      <div class="quiz" data-quiz="1"></div>
+    </section>
+
+    <!-- ============ CP2 ============ -->
+    <section class="cp" id="cp2">
+      <div class="cp-head"><span class="cp-badge">CP2</span><span class="cp-range">Modules 7–10</span></div>
+      <h3>OS and Endpoint Security</h3>
+      <p class="cp-note">Because most attacks eventually land on a host, you need to understand how Windows and Linux work, how to protect the endpoint, and the model that frames all security decisions.</p>
+
+      <div class="mod"><h4><span class="num">M7</span>The Windows Operating System</h4>
+        <p class="intro">Windows dominates the enterprise desktop, so knowing its internals is essential for both defending and investigating it.</p>
+        <div class="concept"><span class="ct">Architecture</span><p>Code runs in <b>user mode</b> (limited) or <b>kernel mode</b> (full hardware access); keeping most code in user mode limits damage. The OS schedules work as <b>processes</b>, which contain <b>threads</b>, which use <b>handles</b> to reference resources (files, keys).</p></div>
+        <div class="concept"><span class="ct">The Registry</span><p>A hierarchical database of system and application settings. Key hives include <b>HKLM</b> (machine-wide) and <b>HKCU</b> (current user). Attackers plant <b>autorun keys</b> here for persistence, which makes the Registry a prime forensic target.</p></div>
+        <div class="concept"><span class="ct">File systems &amp; tooling</span><p><b>NTFS</b> supports permissions, auditing, and encryption (EFS); older <b>FAT</b> does not. Administrative/investigative tools include <b>Task Manager</b>, <b>Event Viewer</b> (logs), <b>PowerShell</b>, and <code>netstat</code> (active connections).</p></div>
+        <div class="concept"><span class="ct">Built-in security</span><p><b>UAC</b> prompts before privilege elevation, <b>Windows Defender</b> provides antimalware, <b>BitLocker</b> encrypts the disk, and <b>Windows Firewall</b> filters host traffic.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">M8</span>Linux Overview</h4>
+        <p class="intro">Linux runs most servers and security tooling (including Kali), so analysts must be comfortable at the shell.</p>
+        <div class="concept"><span class="ct">Shell &amp; filesystem</span><p>Everything is a file under a single tree starting at <code>/</code>. Core commands: <code>ls</code>, <code>cd</code>, <code>cat</code>, <code>grep</code> (search), <code>ps</code> (processes), <code>chmod</code>/<code>chown</code> (permissions/ownership).</p></div>
+        <div class="concept"><span class="ct">Permissions and octal notation</span><p>Each file has read/write/execute bits for <b>owner</b>, <b>group</b>, and <b>other</b>. In octal, read = 4, write = 2, execute = 1, summed per role: <code>rwx</code> = 7, <code>r-x</code> = 5, <code>r--</code> = 4, so <code>rwxr-xr--</code> = <b>754</b>. <b>root</b> is the superuser; ordinary users elevate with <code>sudo</code>.</p></div>
+        <div class="concept"><span class="ct">Logs &amp; services</span><p>System events go to <b>syslog</b> (e.g. under <code>/var/log</code>); reading server logs is a core skill. A port scanner such as <b>Nmap</b> reveals which services (open ports) a host is exposing.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">M9</span>System and Endpoint Protection</h4>
+        <p class="intro">The endpoint (laptop, server, phone) is where users work and where malware ultimately executes, so it gets its own defensive stack.</p>
+        <div class="concept"><span class="ct">Antimalware detection methods</span><p><b>Signature-based</b> detection matches files against a database of known-malware patterns — fast and accurate for known threats, but blind to anything new. <b>Heuristic/behavioral</b> detection flags suspicious behavior, so it can catch novel or <b>zero-day</b> malware that has no signature yet.</p></div>
+        <div class="concept"><span class="ct">Host controls</span><p><b>HIDS/HIPS</b> monitor a single host for intrusions; a <b>host-based firewall</b> filters that machine's traffic; <b>application allow/deny-listing</b> controls what may run; <b>EDR</b> adds continuous recording and response; <b>sandboxing</b> detonates suspicious files in isolation.</p></div>
+        <div class="concept"><span class="ct">Hardening</span><p>Reduce the endpoint's attack surface: apply <b>patches</b> promptly, <b>disable unneeded services</b> and default accounts, and establish a secure <b>baseline</b> to measure drift against.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">M10</span>Cybersecurity Principles, Practices, and Processes</h4>
+        <p class="intro">This module formalizes the mental model used to reason about any security decision: the McCumber Cube.</p>
+        <div class="concept"><span class="ct">The McCumber (Cybersecurity) Cube</span><p>A 3×3×3 framework with three axes. <b>Principles</b> — what you protect: confidentiality, integrity, availability. <b>States of data</b> — where it is: in transit (moving across a network), at rest (stored), in process (being used/computed). <b>Safeguards</b> — how you protect it: technology, policy &amp; practice, and people (education/training/awareness).</p></div>
+        <div class="concept"><span class="ct">Protecting each data state</span><p>Data <b>in transit</b> is protected by TLS/VPN/IPsec; data <b>at rest</b> by disk/file encryption and access controls; data <b>in process</b> by secure coding and memory protections. Integrity is verified with <b>hashing</b>; confidentiality is enforced with <b>encryption</b> (both practiced in Packet Tracer).</p></div>
+        <div class="watch"><b>Watch for:</b> the classic question gives a scenario and asks you to name one item from each axis — e.g. "a doctor encrypts a patient file saved on a USB drive" = confidentiality (principle) + data at rest (state) + technology (safeguard).</div>
+      </div>
+
+      <div class="quiz" data-quiz="2"></div>
+    </section>
+
+    <!-- ============ CP3 ============ -->
+    <section class="cp" id="cp3">
+      <div class="cp-head"><span class="cp-badge">CP3</span><span class="cp-range">Modules 11–13</span></div>
+      <h3>Principles, Practices, and Processes of Network Defense</h3>
+      <p class="cp-note">Turning the theory into an operating defense: layered strategy, hardening the network, and controlling who can do what.</p>
+
+      <div class="mod"><h4><span class="num">M11</span>Understanding Defense</h4>
+        <p class="intro">How organizations structure protection so that no single failure is catastrophic.</p>
+        <div class="concept"><span class="ct">Defense-in-depth levers</span><p>Six reinforcing ideas: <b>layering</b> (multiple independent controls), <b>redundancy</b> (backups/failover), <b>diversity</b> (different vendors so one flaw doesn't break every layer), <b>limiting</b> (least privilege/need-to-know), <b>obscurity</b> (don't advertise details — a supplement, never the sole defense), and <b>simplicity</b> (complex systems are harder to secure).</p></div>
+        <div class="concept"><span class="ct">The policy hierarchy</span><p><b>Policies</b> state high-level intent; <b>standards</b> make requirements mandatory and specific; <b>guidelines</b> are recommended best practice; <b>procedures</b> are the exact step-by-step instructions. Each layer gets more detailed and concrete.</p></div>
+        <div class="concept"><span class="ct">Monitoring</span><p>Organizations detect threats by collecting <b>logs</b>, generating <b>alerts</b>, and consuming external <b>threat feeds</b>, then correlating them (often in a SIEM) to spot patterns a single source would miss.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">M12</span>System and Network Defense</h4>
+        <p class="intro">Concrete hardening across the application, protocol, network, and physical dimensions.</p>
+        <div class="concept"><span class="ct">Application security</span><p>Build security in: <b>secure coding</b>, rigorous <b>input validation</b>, and testing against the <b>OWASP Top 10</b> (the most common web-app risks such as injection and broken access control).</p></div>
+        <div class="concept"><span class="ct">Hardening services &amp; protocols</span><p>Replace insecure protocols with encrypted equivalents — e.g. use <b>SSH</b> instead of cleartext <b>Telnet</b>, and HTTPS instead of HTTP — and turn off services you don't use to shrink the attack surface.</p></div>
+        <div class="concept"><span class="ct">Segmentation &amp; physical security</span><p><b>Network segmentation</b> with VLANs and subnets contains a breach to one zone and limits lateral movement. <b>Physical security</b> (locks, badges, cameras, mantraps) still matters — including for <b>IoT devices</b>, which are often deployed in exposed locations.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">M13</span>Access Control</h4>
+        <p class="intro">Deciding who may access what, and proving it, is the heart of confidentiality and integrity.</p>
+        <div class="concept"><span class="ct">AAA</span><p><b>Authentication</b> proves identity, <b>Authorization</b> grants permissions, and <b>Accounting</b> logs what was done — together the backbone of access control.</p></div>
+        <div class="concept"><span class="ct">Authentication factors &amp; MFA</span><p>Factors fall into categories: <b>something you know</b> (password/PIN), <b>something you have</b> (token/smart card), <b>something you are</b> (biometrics). <b>Multifactor authentication</b> requires factors from <em>different</em> categories — two passwords is still single-factor.</p></div>
+        <div class="concept"><span class="ct">Access control models</span><p><b>MAC</b> (mandatory) is strictest: a central authority assigns labels/clearances and owners cannot override them (military use). <b>DAC</b> (discretionary): the resource owner decides who gets access. <b>RBAC</b> (role-based): permissions attach to job roles. <b>ABAC/rule-based</b>: access is decided by attributes and rules. Underpinning all of them: <b>least privilege</b> and <b>separation of duties</b>.</p></div>
+        <div class="concept amber"><span class="ct">TACACS+ vs. RADIUS</span><p>Both are server-based AAA protocols. <b>TACACS+</b> is Cisco-proprietary, runs over <b>TCP</b>, encrypts the <b>entire payload</b>, and <b>separates</b> authentication, authorization, and accounting. <b>RADIUS</b> is an open standard, runs over <b>UDP</b>, encrypts <b>only the password</b>, and <b>combines</b> authentication with authorization.</p></div>
+      </div>
+
+      <div class="quiz" data-quiz="3"></div>
+    </section>
+
+    <!-- ============ CP4 ============ -->
+    <section class="cp" id="cp4">
+      <div class="cp-head"><span class="cp-badge">CP4</span><span class="cp-range">Modules 14–18</span></div>
+      <h3>Firewalls, Cryptography, and Cloud Security</h3>
+      <p class="cp-note">The most point-dense group. Traffic filtering with ACLs and firewalls, securing cloud workloads, and the cryptography that underpins confidentiality, integrity, and trust.</p>
+
+      <div class="mod"><h4><span class="num">M14</span>Access Control Lists</h4>
+        <p class="intro">ACLs are ordered rule lists on routers/switches that permit or deny traffic — the most basic packet filter.</p>
+        <div class="concept"><span class="ct">Standard vs. extended</span><p>A <b>standard</b> ACL can match only the <b>source IP</b>. An <b>extended</b> ACL matches source and destination IP, the protocol, and port numbers — far more precise. ACLs can be <b>numbered</b> or <b>named</b>.</p></div>
+        <div class="concept"><span class="ct">Placement rules</span><p>Place a <b>standard</b> ACL <b>close to the destination</b> — because it only knows the source, putting it early would over-block legitimate traffic. Place an <b>extended</b> ACL <b>close to the source</b> so unwanted traffic is dropped before it consumes bandwidth.</p></div>
+        <div class="concept"><span class="ct">Wildcard masks &amp; implicit deny</span><p>ACLs match addresses using a <b>wildcard mask</b>, which is the inverse of a subnet mask (0 = must match, 1 = ignore). Every ACL ends with an invisible <b>implicit deny all</b>, so at least one <code>permit</code> is required or everything is blocked. IPv6 ACLs follow the same logic.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">M15</span>Firewall Technologies</h4>
+        <p class="intro">Firewalls enforce a boundary policy; they differ mainly in how much context they track.</p>
+        <div class="concept"><span class="ct">Firewall types</span><p><b>Packet-filtering (stateless)</b> checks each packet against static rules with no memory of prior packets. <b>Application/proxy</b> firewalls inspect at the application layer and can terminate connections. <b>NAT</b> firewalls hide internal addresses. <b>NGFW</b> combines deep inspection, application awareness, and IPS.</p></div>
+        <div class="concept"><span class="ct">Stateful vs. stateless</span><p>A <b>stateful</b> firewall keeps a <b>state table</b> of active connections, so it automatically allows legitimate return traffic and blocks unsolicited packets — more secure and the modern default. A <b>stateless</b> firewall evaluates every packet in isolation.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">M16</span>Zone-Based Policy Firewalls (ZPF)</h4>
+        <p class="intro">Cisco's modern IOS firewall model, which applies policy between named security zones instead of per-interface rules.</p>
+        <div class="concept"><span class="ct">Building blocks</span><p>Interfaces are assigned to <b>security zones</b> (e.g. INSIDE, OUTSIDE, DMZ). A <b>zone pair</b> defines a direction of traffic between two zones. <b>Class maps</b> identify traffic, <b>policy maps</b> decide the action (inspect/pass/drop), and a <b>service policy</b> binds the policy to the zone pair.</p></div>
+        <div class="concept"><span class="ct">Default behavior</span><p>Traffic between different zones is <b>denied unless a policy explicitly permits it</b>; traffic within the same zone flows freely by default. Configured and tested in Packet Tracer.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">M17</span>Cloud Security</h4>
+        <p class="intro">Moving workloads to the cloud changes <em>who</em> is responsible for <em>which</em> controls.</p>
+        <div class="concept"><span class="ct">Service &amp; deployment models</span><p>Service models: <b>IaaS</b> (you rent infrastructure), <b>PaaS</b> (you rent a platform to run code), <b>SaaS</b> (you consume a finished application). Deployment models: <b>public</b>, <b>private</b>, <b>hybrid</b>, and <b>community</b>.</p></div>
+        <div class="concept"><span class="ct">Shared responsibility model</span><p>The provider always secures the <b>physical infrastructure and hypervisor</b>. The customer's share grows as you move down the stack: in <b>IaaS</b> the customer secures the guest OS, applications, and data; in <b>SaaS</b> the customer is mainly responsible for their data and access management.</p></div>
+        <div class="concept"><span class="ct">Threats &amp; controls</span><p>Leading cloud risks are <b>misconfiguration</b>, <b>insecure APIs</b>, and <b>data breaches</b>. Controls include <b>encryption</b>, strong <b>IAM</b>, and a <b>CASB</b> to enforce policy across cloud apps. <b>Virtualization/containers</b> add hypervisor and image security concerns.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">M18</span>Cryptography</h4>
+        <p class="intro">The mathematical backbone of confidentiality, integrity, authentication, and non-repudiation.</p>
+        <div class="concept"><span class="ct">Symmetric vs. asymmetric encryption</span><p><b>Symmetric</b> uses one shared secret key to encrypt and decrypt — very fast, ideal for bulk data (DES, 3DES, <b>AES</b>) — but the key must be exchanged securely. <b>Asymmetric</b> uses a mathematically linked <b>key pair</b>: data encrypted with the public key can only be decrypted with the private key. It's slower but solves key distribution (RSA, Diffie-Hellman, ECC). In practice, asymmetric crypto securely exchanges a symmetric session key, then symmetric crypto does the heavy lifting.</p></div>
+        <div class="concept"><span class="ct">Hashing (integrity)</span><p>A <b>hash</b> is a one-way function producing a fixed-length digest; you cannot reverse it to recover the input. It proves <b>integrity</b> — recompute the hash and compare. <b>MD5</b> and <b>SHA-1</b> are broken/deprecated; use <b>SHA-2 (SHA-256)</b> or SHA-3. A <b>collision</b> (two inputs, same hash) is a weakness. Passwords are <b>salted</b> before hashing to defeat rainbow tables. <b>HMAC</b> adds a secret key to a hash, giving integrity <em>and</em> authentication.</p></div>
+        <div class="concept"><span class="ct">Digital signatures &amp; PKI</span><p>To sign, you hash the message and encrypt the hash with your <b>private key</b>. Anyone can verify with your <b>public key</b>, which proves <b>integrity</b>, <b>authentication</b>, and <b>non-repudiation</b> (you can't deny sending it). <b>PKI</b> makes this trustworthy at scale: a <b>Certificate Authority (CA)</b> issues <b>X.509 certificates</b> binding a public key to a verified identity.</p></div>
+        <div class="concept"><span class="ct">Steganography</span><p>Hides the very <b>existence</b> of a message by embedding it inside another file (image/audio). Encryption hides the <b>content</b> but not the fact that a secret exists; steganography hides the fact itself.</p></div>
+        <div class="watch"><b>Watch for:</b> direction of keys. Encrypt for confidentiality with the recipient's <em>public</em> key (only they can open it). Sign for authenticity with your own <em>private</em> key (anyone can verify it).</div>
+      </div>
+
+      <div class="quiz" data-quiz="4"></div>
+    </section>
+
+    <!-- ============ CP5 ============ -->
+    <section class="cp" id="cp5">
+      <div class="cp-head"><span class="cp-badge">CP5</span><span class="cp-range">Modules 19–21</span></div>
+      <h3>Evaluating Security Alerts</h3>
+      <p class="cp-note">The analyst's job: know which protocols carry (and hide) evidence, what security data looks like, and how to separate real attacks from noise.</p>
+
+      <div class="mod"><h4><span class="num">M19</span>Technologies and Protocols</h4>
+        <p class="intro">Monitoring depends on understanding the protocols that both reveal and conceal activity.</p>
+        <div class="concept"><span class="ct">Protocols you monitor</span><p><b>Syslog</b> centralizes logs, <b>NTP</b> keeps timestamps aligned (essential for correlating events), <b>DNS</b> and <b>HTTP/HTTPS</b> dominate traffic, and <b>ICMP</b>/<b>SSH</b> appear in recon and administration.</p></div>
+        <div class="concept"><span class="ct">Protocols that hinder monitoring</span><p><b>HTTPS/TLS</b> encryption hides payloads; <b>tunneling</b>, <b>TOR</b>, <b>NAT/PAT</b>, and <b>peer-to-peer</b> traffic all obscure the true source, destination, or content — challenges every analyst must account for.</p></div>
+        <div class="concept"><span class="ct">Visibility tools</span><p><b>NetFlow</b> records metadata about every flow (who talked to whom, how much) even when the payload is encrypted; a <b>SIEM</b> aggregates and correlates logs from many sources into actionable alerts.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">M20</span>Network Security Data</h4>
+        <p class="intro">Different data types give different views of an incident; analysts combine them.</p>
+        <div class="concept"><span class="ct">Types of security data</span><p><b>Alert data</b> (IDS/IPS verdicts), <b>session/transaction data</b> (records of connections), <b>full packet capture</b> (the complete traffic, storage-heavy but definitive), <b>statistical data</b> (baselines/anomalies), and <b>log data</b> (from hosts and applications).</p></div>
+        <div class="concept"><span class="ct">Sources &amp; tools</span><p>Data comes from IDS/IPS, firewall, proxy, and endpoint logs plus NetFlow. Analysts use <b>tcpdump</b> and <b>Wireshark</b> for packet analysis and <b>Zeek</b> for rich connection logs.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">M21</span>Evaluating Alerts</h4>
+        <p class="intro">Alerts are only useful once you can judge whether they're real and place them in the attacker's timeline.</p>
+        <div class="concept"><span class="ct">Alert classification</span><p><b>True positive</b>: alarm fired, threat was real. <b>False positive</b>: alarm fired on benign activity (noise that wastes analyst time). <b>False negative</b>: no alarm, but a real attack occurred — the most dangerous outcome because it goes unnoticed. <b>True negative</b>: correctly quiet. Tuning aims to cut false positives without creating false negatives.</p></div>
+        <div class="concept"><span class="ct">Detection rules</span><p><b>Snort</b> is a signature-based IDS/IPS whose rules specify what traffic to match and what action to take; well-written rules reduce false positives.</p></div>
+        <div class="concept"><span class="ct">Analysis frameworks</span><p>The <b>Cyber Kill Chain</b> models an attack in stages (reconnaissance → weaponization → delivery → exploitation → installation → command &amp; control → actions on objectives). The <b>Diamond Model</b> relates adversary, capability, infrastructure, and victim. <b>MITRE ATT&amp;CK</b> is a detailed knowledge base of real adversary tactics and techniques (TTPs) used to map and hunt threats.</p></div>
+      </div>
+
+      <div class="quiz" data-quiz="5"></div>
+    </section>
+
+    <!-- ============ CP6 ============ -->
+    <section class="cp" id="cp6">
+      <div class="cp-head"><span class="cp-badge">CP6</span><span class="cp-range">Modules 22–26</span></div>
+      <h3>Vulnerability Assessment and Risk Management</h3>
+      <p class="cp-note">Governing security lawfully, testing systems, consuming threat intelligence, scoring weaknesses, and quantifying risk so leaders can decide what to fix first.</p>
+
+      <div class="mod"><h4><span class="num">M22</span>Governance and Compliance</h4>
+        <p class="intro">Security operates inside legal and ethical boundaries; governance sets direction and holds the organization accountable.</p>
+        <div class="concept"><span class="ct">Ethics &amp; governance</span><p>Governance defines roles, oversight, and acceptable use. Professional conduct follows codes such as the <b>ISC² Code of Ethics</b>. Note that <b>legal</b> and <b>ethical</b> are not the same — an action can be one without the other.</p></div>
+        <div class="concept"><span class="ct">Laws &amp; regulations (match to the data)</span><p><b>HIPAA</b> — health information. <b>FERPA</b> — student education records. <b>GLBA</b> — financial institutions' customer data. <b>SOX</b> — corporate financial reporting/accountability. <b>PCI DSS</b> — payment-card data (an industry standard, not a law). <b>GDPR</b> — EU personal data.</p></div>
+        <div class="concept"><span class="ct">Frameworks</span><p>The <b>ISO/IEC 27000</b> series provides an information-security management standard. The <b>NIST Cybersecurity Framework</b> organizes work into five functions: <b>Identify, Protect, Detect, Respond, Recover</b>.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">M23</span>Network Security Testing</h4>
+        <p class="intro">You can't defend what you haven't tested; testing finds weaknesses before attackers do.</p>
+        <div class="concept"><span class="ct">Scanning vs. penetration testing</span><p><b>Vulnerability scanning</b> identifies and catalogs weaknesses automatically but does not exploit them. <b>Penetration testing</b> goes further and actively exploits weaknesses to prove real-world impact and chain-ability.</p></div>
+        <div class="concept"><span class="ct">Techniques &amp; tools</span><p>Common tools: <b>Nmap</b> (port/host discovery), <b>Nessus/OpenVAS</b> (vulnerability scanners), <b>Metasploit</b> (exploitation framework), <b>Wireshark</b> (packet analysis), and <b>Kali Linux</b> (the pen-testing distro). Engagements are <b>black-box</b> (no prior knowledge), <b>white-box</b> (full knowledge), or <b>gray-box</b> (partial).</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">M24</span>Threat Intelligence</h4>
+        <p class="intro">Knowing what adversaries are doing elsewhere lets you defend proactively.</p>
+        <div class="concept"><span class="ct">Sources</span><p><b>OSINT</b> (open sources), <b>commercial feeds</b>, the <b>CVE</b> database (catalog of known vulnerabilities), industry <b>ISACs</b> (sharing communities), and government bodies such as <b>CISA</b>.</p></div>
+        <div class="concept"><span class="ct">Sharing standards &amp; indicators</span><p><b>STIX</b> is a standard format for expressing threat information; <b>TAXII</b> is the protocol that transports it. An <b>Indicator of Compromise (IoC)</b> is evidence a breach already happened (a bad hash/IP); an <b>Indicator of Attack (IoA)</b> reflects behavior of an attack in progress.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">M25</span>Endpoint Vulnerability Assessment</h4>
+        <p class="intro">Systematically finding, scoring, and remediating weaknesses on hosts.</p>
+        <div class="concept"><span class="ct">Profiling the attack surface</span><p>Build a <b>network profile</b> and <b>server profile</b> (normal ports, traffic, and behavior) so deviations stand out as potential compromise.</p></div>
+        <div class="concept"><span class="ct">CVSS</span><p>The <b>Common Vulnerability Scoring System</b> rates severity on a 0–10 scale using three metric groups: <b>Base</b> (intrinsic characteristics), <b>Temporal</b> (how it changes over time, e.g. exploit availability), and <b>Environmental</b> (impact in your specific environment). Scores map to Low → Critical for prioritization.</p></div>
+        <div class="concept"><span class="ct">Vulnerability management lifecycle</span><p>A repeating cycle: <b>discover</b> → <b>prioritize</b> (often by CVSS) → <b>remediate</b> (patch/mitigate) → <b>verify</b>, supported by asset, patch, and change management.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">M26</span>Risk Management and Security Controls</h4>
+        <p class="intro">Risk is unavoidable; the job is to measure it and decide how to handle it.</p>
+        <div class="concept"><span class="ct">What risk is</span><p><b>Risk</b> combines a threat, a vulnerability it can exploit, and the impact if it does (<b>risk = threat × vulnerability × impact</b>). You reduce risk by removing the vulnerability or lowering the impact.</p></div>
+        <div class="concept"><span class="ct">The four risk responses</span><p><b>Avoid</b> (stop the risky activity), <b>Transfer</b> (shift impact to a third party, e.g. insurance), <b>Mitigate</b> (add controls to reduce it), or <b>Accept</b> (acknowledge and live with it when cost outweighs benefit).</p></div>
+        <div class="concept"><span class="ct">Quantifying loss</span><p><b>SLE</b> (single loss expectancy) = asset value × exposure factor — the cost of one incident. <b>ARO</b> (annual rate of occurrence) = how many times per year it's expected. <b>ALE = SLE × ARO</b> gives the expected annual loss, which justifies spending on controls.</p></div>
+        <div class="concept"><span class="ct">Control types &amp; functions</span><p>Controls are grouped by <b>type</b> — administrative (policies/training), physical (locks/guards), technical (firewalls/encryption) — and by <b>function</b>: preventive, detective, corrective, deterrent, compensating, and recovery.</p></div>
+      </div>
+
+      <div class="quiz" data-quiz="6"></div>
+    </section>
+
+    <!-- ============ CP7 ============ -->
+    <section class="cp" id="cp7">
+      <div class="cp-head"><span class="cp-badge">CP7</span><span class="cp-range">Module 27</span></div>
+      <h3>Incident Response</h3>
+      <p class="cp-note">What to do when prevention fails: investigate rigorously, contain and recover, and get the business back on its feet.</p>
+
+      <div class="mod"><h4><span class="num">M27</span>Digital Forensics and Incident Analysis and Response</h4>
+        <p class="intro">Incident response is a disciplined process, and forensics is the careful handling of evidence that supports it.</p>
+        <div class="concept"><span class="ct">The NIST incident-response lifecycle</span><p>Four phases in order: <b>Preparation</b> (tools, plans, training before anything happens) → <b>Detection &amp; Analysis</b> (identify and scope the incident) → <b>Containment, Eradication &amp; Recovery</b> (stop the spread, remove the threat, restore service) → <b>Post-incident activity</b> (lessons learned to improve future response). A <b>CSIRT</b> executes this using playbooks.</p></div>
+        <div class="concept"><span class="ct">Digital forensics</span><p><b>Order of volatility</b> says to collect the most perishable evidence first — CPU registers, RAM, and running state are lost on shutdown, so capture them before disk images. <b>Chain of custody</b> documents who handled each piece of evidence, when, and how, preserving its integrity and legal admissibility.</p></div>
+        <div class="concept"><span class="ct">Business continuity &amp; disaster recovery</span><p><b>BCP</b> keeps the business running through disruption; <b>DRP</b> restores IT afterward. Two key targets: <b>RPO</b> (recovery point objective) = the maximum tolerable data loss, measured as a point in time; <b>RTO</b> (recovery time objective) = how long restoration may take. Both drive backup frequency and redundancy design.</p></div>
+        <div class="watch"><b>Watch for:</b> RPO is about <em>data loss</em> (how far back), RTO is about <em>downtime</em> (how long to restore) — questions frequently swap the two.</div>
+      </div>
+
+      <div class="quiz" data-quiz="7"></div>
+    </section>
+
+    <!-- Tables -->
+    <section class="cp" id="tables">
+      <div class="cp-head"><span class="cp-badge" style="background:var(--amber)">▤</span><span class="cp-range">high-yield</span></div>
+      <h3>Quick-reference tables</h3>
+      <p class="cp-note">The exam builds its wrong answers from the <em>other</em> item in each pair. Memorize these.</p>
+
+      <div class="tablewrap">
+        <table>
+          <caption>Cryptography cheat-sheet</caption>
+          <thead><tr><th>Technique</th><th>Reversible?</th><th>Key used</th><th>Provides</th></tr></thead>
+          <tbody>
+            <tr><td>Symmetric encryption</td><td>Yes</td><td>One shared key</td><td>Confidentiality (fast, bulk data)</td></tr>
+            <tr><td>Asymmetric encryption</td><td>Yes</td><td>Public/private pair</td><td>Confidentiality + key exchange</td></tr>
+            <tr><td>Hashing</td><td>No (one-way)</td><td>None</td><td>Integrity</td></tr>
+            <tr><td>HMAC</td><td>No</td><td>Shared secret</td><td>Integrity + authentication</td></tr>
+            <tr><td>Digital signature</td><td>—</td><td>Sender's private key</td><td>Integrity + auth + non-repudiation</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tablewrap" style="margin-top:22px;">
+        <table>
+          <caption>TACACS+ vs. RADIUS</caption>
+          <thead><tr><th></th><th>TACACS+</th><th>RADIUS</th></tr></thead>
+          <tbody>
+            <tr><td>Vendor</td><td>Cisco proprietary</td><td>Open standard</td></tr>
+            <tr><td>Transport</td><td>TCP 49</td><td>UDP 1812/1813</td></tr>
+            <tr><td>Encryption</td><td>Entire payload</td><td>Password only</td></tr>
+            <tr><td>AAA</td><td>Separates auth/authz/acct</td><td>Combines auth + authz</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tablewrap" style="margin-top:22px;">
+        <table>
+          <caption>ACL type &amp; placement</caption>
+          <thead><tr><th>ACL</th><th>Matches on</th><th>Place near</th></tr></thead>
+          <tbody>
+            <tr><td>Standard</td><td>Source IP only</td><td>Destination</td></tr>
+            <tr><td>Extended</td><td>Source/dest IP, protocol, ports</td><td>Source</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tablewrap" style="margin-top:22px;">
+        <table>
+          <caption>Alert classification &amp; risk math</caption>
+          <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td>True positive</td><td>Alarm fired, threat was real</td></tr>
+            <tr><td>False positive</td><td>Alarm fired, no real threat (noise)</td></tr>
+            <tr><td>False negative</td><td>No alarm, but a real attack occurred (worst case)</td></tr>
+            <tr><td>True negative</td><td>No alarm, no threat</td></tr>
+            <tr><td>ALE</td><td>= SLE × ARO &nbsp;(annualized loss expectancy)</td></tr>
+            <tr><td>Risk responses</td><td>avoid · transfer · mitigate · accept</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer id="strategy">
+      <h3>Exam strategy</h3>
+      <ul>
+        <li>Study by checkpoint group — the module exams are bundled exactly as above (1–6, 7–10, 11–13, 14–18, 19–21, 22–26, 27).</li>
+        <li>3.0 is technical: know OS internals, ACL placement + wildcard masks, firewall/ZPF configuration, and analyst concepts (kill chain, ATT&amp;CK, CVSS, alert triage).</li>
+        <li>Do the Packet Tracer and lab activities — several questions mirror them (ACLs, ZPF, wireless hardening, NetFlow, digital signatures).</li>
+        <li>Pass mark ≈ 70% and retakes are usually allowed. Use the checkpoint quizzes here to find weak groups before the final.</li>
+      </ul>
+      <p style="margin-top:22px;color:var(--muted-2);font-size:12px;">Study aid built from the public Cybersecurity Essentials 3.0 curriculum outline. Verify specifics against your NetAcad course materials.</p>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+const QUIZZES = {
+  1: {title:"Checkpoint 1 — Network Security", questions:[
+    {q:"What is the key difference between a worm and a virus?",
+     o:["A worm self-replicates and spreads across networks without a host file or user action","A virus spreads automatically over networks while a worm needs a host","A worm always encrypts files and demands ransom","A virus cannot attach itself to executable files"],
+     a:0, e:"A worm is self-propagating and needs no host file or user action. A virus attaches to a host file and requires user action to spread."},
+    {q:"Which protocol uses the three-way handshake and is the target of a SYN flood?",
+     o:["ICMP","UDP","TCP","ARP"], a:2,
+     e:"TCP is connection-oriented (SYN → SYN-ACK → ACK). A SYN flood exhausts the target's half-open connection table."},
+    {q:"In a DDoS attack, the compromised hosts that flood the target are collectively called a:",
+     o:["Honeypot","Botnet of zombies","Sinkhole","Proxy chain"], a:1,
+     e:"A botnet of zombie hosts, directed by a handler/C2, generates the distributed flood."},
+    {q:"Which wireless setting is a genuine security control rather than weak obscurity?",
+     o:["Hiding the SSID broadcast","MAC address filtering","WPA2 with AES/CCMP","Reducing transmit power"], a:2,
+     e:"SSID hiding and MAC filtering are trivially bypassed. WPA2/WPA3 encryption is the real control."},
+    {q:"A phishing attack aimed specifically at a company's senior executives is called:",
+     o:["Vishing","Whaling","Smishing","Tailgating"], a:1,
+     e:"Whaling is spear phishing targeted at high-value individuals such as executives."},
+    {q:"How does an IDS differ from an IPS?",
+     o:["An IDS sits inline and drops traffic; an IPS only logs","An IDS detects and alerts but does not block; an IPS is inline and can drop traffic","Both only work on encrypted traffic","An IDS blocks traffic; an IPS only detects it"], a:1,
+     e:"IDS is out-of-band: it detects and alerts. IPS is inline: it detects and can actively block/drop."}
+  ]},
+  2: {title:"Checkpoint 2 — OS and Endpoint Security", questions:[
+    {q:"In Linux, the permission string rwxr-xr-- expressed in octal is:",
+     o:["755","754","644","775"], a:1,
+     e:"rwx = 7, r-x = 5, r-- = 4, so the value is 754."},
+    {q:"Which Windows component stores low-level configuration and is a common malware persistence location?",
+     o:["Task Manager","The Registry","Event Viewer","PowerShell"], a:1,
+     e:"The Registry (HKLM/HKCU) holds configuration and autorun keys that malware abuses for persistence."},
+    {q:"On the McCumber Cube, which trio is the 'states of data' axis?",
+     o:["Confidentiality, integrity, availability","Technology, policy, people","In transit, at rest, in process","Public, private, hybrid"], a:2,
+     e:"States of data = in transit / at rest / in process. CIA is the principles axis; technology/policy/people is the safeguards axis."},
+    {q:"Signature-based antimalware is best at detecting:",
+     o:["Known malware that matches a stored pattern","Only zero-day exploits","Insider threats","Weak passwords"], a:0,
+     e:"Signatures catch known threats; heuristic/behavioral detection is needed for novel or zero-day malware."},
+    {q:"Encrypting a file stored on a USB drive protects which principle and data state?",
+     o:["Integrity; data in process","Availability; data in transit","Confidentiality; data at rest","Confidentiality; data in transit"], a:2,
+     e:"Encryption enforces confidentiality, and a file sitting on a drive is data at rest."}
+  ]},
+  3: {title:"Checkpoint 3 — Principles, Practices & Processes", questions:[
+    {q:"Which access control model grants permissions based on a user's job function?",
+     o:["DAC","MAC","RBAC","Rule-based"], a:2,
+     e:"RBAC (role-based access control) ties permissions to roles/job functions."},
+    {q:"Which statement about TACACS+ versus RADIUS is TRUE?",
+     o:["TACACS+ encrypts the entire payload and separates the AAA functions","RADIUS encrypts the entire payload","TACACS+ runs over UDP","RADIUS is Cisco-proprietary"], a:0,
+     e:"TACACS+ (Cisco, TCP) encrypts the whole payload and separates AAA. RADIUS (open, UDP) encrypts only the password and combines authentication with authorization."},
+    {q:"Multifactor authentication requires:",
+     o:["Two passwords","Factors from two or more different categories (know / have / are)","The same factor entered twice","One very strong password"], a:1,
+     e:"MFA must combine different categories. Two passwords are still one factor (something you know)."},
+    {q:"The strictest model, enforcing labels and clearances centrally (common in military systems), is:",
+     o:["DAC","MAC","RBAC","ABAC"], a:1,
+     e:"MAC (mandatory access control) enforces classification labels/clearances; owners cannot override them."},
+    {q:"Replacing Telnet with SSH for device management is an example of:",
+     o:["Network segmentation","Hardening a network protocol","Physical security","Risk transfer"], a:1,
+     e:"SSH encrypts management sessions, replacing cleartext Telnet — a protocol-hardening measure."}
+  ]},
+  4: {title:"Checkpoint 4 — Firewalls, Cryptography & Cloud", questions:[
+    {q:"A standard IPv4 ACL filters traffic based on:",
+     o:["Source IP address only","Source and destination IP, protocol, and ports","MAC addresses","Application-layer content"], a:0,
+     e:"Standard ACLs match source IP only. Extended ACLs match source/destination IP, protocol, and ports."},
+    {q:"Best practice says an extended ACL should be placed:",
+     o:["Close to the destination","Close to the source","On a loopback interface","Placement makes no difference"], a:1,
+     e:"Extended ACLs go near the source so unwanted traffic is dropped early; standard ACLs go near the destination."},
+    {q:"To send a confidential file to Alice, you encrypt it with:",
+     o:["Alice's private key","Your private key","Alice's public key","A shared hash value"], a:2,
+     e:"Encrypt with the recipient's public key; only Alice's matching private key can decrypt it."},
+    {q:"A digital signature provides integrity, authentication, and:",
+     o:["Availability","Non-repudiation","Confidentiality","Compression"], a:1,
+     e:"Signing with the sender's private key proves origin, giving non-repudiation (the sender can't deny it)."},
+    {q:"A stateful firewall differs from a stateless one because it:",
+     o:["Tracks the state of active connections in a table","Only inspects the application layer","Cannot perform NAT","Uses no rule set"], a:0,
+     e:"A stateful firewall tracks connections and permits matching return traffic; a stateless one evaluates each packet independently."},
+    {q:"Under the cloud shared-responsibility model for IaaS, the customer is generally responsible for:",
+     o:["The physical data center","The hypervisor","The guest OS, applications, and data","The provider's network hardware"], a:2,
+     e:"In IaaS the provider secures the physical infrastructure and hypervisor; the customer secures the guest OS, apps, and data."}
+  ]},
+  5: {title:"Checkpoint 5 — Evaluating Security Alerts", questions:[
+    {q:"An alert that fires on legitimate, benign activity is a:",
+     o:["False negative","False positive","True positive","True negative"], a:1,
+     e:"A false positive is an alarm raised when no real threat exists — it creates analyst noise."},
+    {q:"Which outcome is generally the most dangerous for a defender?",
+     o:["False positive","True negative","False negative","True positive"], a:2,
+     e:"A false negative means a real attack produced no alert, so it goes undetected."},
+    {q:"Which technology most hinders inspection of network traffic?",
+     o:["Syslog","HTTPS/TLS encryption","NetFlow","ICMP echo"], a:1,
+     e:"TLS/HTTPS encrypts the payload, hiding content from monitoring tools."},
+    {q:"In the Cyber Kill Chain, the phase where the attacker establishes remote control of the host is:",
+     o:["Reconnaissance","Weaponization","Delivery","Command and Control (C2)"], a:3,
+     e:"Command and Control is the channel the attacker uses to remotely operate the compromised system."},
+    {q:"MITRE ATT&CK is best described as:",
+     o:["A knowledge base of adversary tactics and techniques","A firewall rule language","An encryption standard","A vulnerability scanner"], a:0,
+     e:"ATT&CK is a curated knowledge base mapping real-world adversary tactics, techniques, and procedures (TTPs)."}
+  ]},
+  6: {title:"Checkpoint 6 — Vulnerability Assessment & Risk", questions:[
+    {q:"HIPAA regulates the protection of:",
+     o:["Student education records","Health information","Payment-card data","EU personal data"], a:1,
+     e:"HIPAA covers health information. FERPA = student records, PCI DSS = card data, GDPR = EU personal data."},
+    {q:"The annualized loss expectancy is calculated as:",
+     o:["ALE = SLE × ARO","ALE = ARO ÷ SLE","ALE = SLE + ARO","ALE = asset value × threat count"], a:0,
+     e:"ALE = SLE × ARO, where SLE is the single loss expectancy and ARO is the annual rate of occurrence."},
+    {q:"Which activity actively exploits weaknesses to prove real-world impact?",
+     o:["Vulnerability scanning","Penetration testing","Patch management","Log collection"], a:1,
+     e:"Penetration testing exploits vulnerabilities to demonstrate impact; scanning only identifies them."},
+    {q:"CVSS is used to:",
+     o:["Encrypt data at rest","Score the severity of vulnerabilities","Filter packets","Manage user roles"], a:1,
+     e:"CVSS produces a severity score from its base, temporal, and environmental metric groups."},
+    {q:"Buying cyber-insurance to handle a risk is an example of risk:",
+     o:["Avoidance","Transfer","Acceptance","Mitigation"], a:1,
+     e:"Insurance shifts the financial impact to a third party — that is risk transfer."}
+  ]},
+  7: {title:"Checkpoint 7 — Incident Response", questions:[
+    {q:"What is the correct NIST incident-response order?",
+     o:["Detection → Preparation → Recovery → Containment","Preparation → Detection & Analysis → Containment/Eradication/Recovery → Post-incident","Containment → Preparation → Detection → Recovery","Recovery → Detection → Preparation → Analysis"], a:1,
+     e:"NIST's lifecycle: Preparation; Detection & Analysis; Containment, Eradication & Recovery; Post-incident (lessons learned)."},
+    {q:"The forensic 'order of volatility' tells you to:",
+     o:["Collect the most volatile evidence, such as memory, first","Image the disk before capturing memory","Ignore RAM contents","Reboot the system before collecting anything"], a:0,
+     e:"Volatile data (RAM, cache, running state) is lost on power-off, so it must be captured first."},
+    {q:"RPO (Recovery Point Objective) defines:",
+     o:["How long recovery is allowed to take","The maximum acceptable amount of data loss, measured in time","The total cost of a breach","The number of backups retained"], a:1,
+     e:"RPO is the data-loss tolerance (how far back you can lose data). RTO is the allowable time to restore service."},
+    {q:"Chain of custody documentation exists to:",
+     o:["Preserve the integrity and legal admissibility of evidence","Speed up disk encryption","Configure firewall zones","Assign user roles"], a:0,
+     e:"It records who handled each piece of evidence, when, and how — keeping it trustworthy and admissible."}
+  ]}
+};
+
+const LETTERS = ["A","B","C","D","E"];
+const state = {};
+
+function buildQuiz(container){
+  const id = container.getAttribute('data-quiz');
+  const data = QUIZZES[id];
+  state[id] = {answered:new Set(), correct:0};
+
+  const top = document.createElement('div');
+  top.className = 'quiz-top';
+  top.innerHTML = `<h4><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#54c6d8" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>${data.title}</h4>
+    <span class="score" id="score-${id}">0 / ${data.questions.length}</span>`;
+  container.appendChild(top);
+
+  data.questions.forEach((question, qi) => {
+    const qEl = document.createElement('div');
+    qEl.className = 'q';
+    const qText = document.createElement('p');
+    qText.className = 'qtext';
+    qText.innerHTML = `<span class="qn">Q${qi+1}</span>${question.q}`;
+    qEl.appendChild(qText);
+
+    const opts = document.createElement('div');
+    opts.className = 'opts';
+    question.o.forEach((optText, oi) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.type = 'button';
+      btn.innerHTML = `<span class="key">${LETTERS[oi]}</span><span>${optText}</span><span class="mark"></span>`;
+      btn.addEventListener('click', () => choose(id, qi, oi, opts, qEl, question));
+      opts.appendChild(btn);
+    });
+    qEl.appendChild(opts);
+
+    const exp = document.createElement('div');
+    exp.className = 'explain';
+    exp.innerHTML = `<b>Why:</b> ${question.e}`;
+    qEl.appendChild(exp);
+
+    container.appendChild(qEl);
+  });
+
+  const actions = document.createElement('div');
+  actions.className = 'quiz-actions';
+  const reset = document.createElement('button');
+  reset.className = 'reset';
+  reset.type = 'button';
+  reset.textContent = 'Reset this quiz';
+  reset.addEventListener('click', () => { container.innerHTML=''; buildQuiz(container); updateGlobal(); });
+  actions.appendChild(reset);
+  container.appendChild(actions);
+}
+
+function choose(id, qi, oi, optsEl, qEl, question){
+  const s = state[id];
+  if (s.answered.has(qi)) return;
+  s.answered.add(qi);
+  const buttons = optsEl.querySelectorAll('.opt');
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    const mark = b.querySelector('.mark');
+    if (i === question.a){ b.classList.add('correct'); mark.textContent = '✓ correct'; }
+    if (i === oi && oi !== question.a){ b.classList.add('wrong'); mark.textContent = '✗ your pick'; }
+  });
+  if (oi === question.a) s.correct++;
+  qEl.querySelector('.explain').classList.add('show');
+  document.getElementById('score-'+id).innerHTML =
+    `<b>${s.correct}</b> / ${QUIZZES[id].questions.length}`;
+  updateGlobal();
+}
+
+function updateGlobal(){
+  let answered = 0, correct = 0;
+  Object.keys(state).forEach(id => { answered += state[id].answered.size; correct += state[id].correct; });
+  document.getElementById('answered').textContent = answered;
+  document.getElementById('totalscore').textContent = answered ? Math.round(correct/answered*100)+'%' : '0%';
+}
+
+document.querySelectorAll('.quiz').forEach(buildQuiz);
+
+const links = [...document.querySelectorAll('#nav a')];
+const map = {};
+links.forEach(l => { const id = l.getAttribute('href').slice(1); if(document.getElementById(id)) map[id]=l; });
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(en => {
+    if (en.isIntersecting){
+      links.forEach(l => l.classList.remove('active'));
+      const l = map[en.target.id]; if (l) l.classList.add('active');
+    }
+  });
+}, {rootMargin:'-20% 0px -70% 0px', threshold:0});
+Object.keys(map).forEach(id => obs.observe(document.getElementById(id)));
+
+const side = document.getElementById('side');
+const scrim = document.getElementById('scrim');
+const menubtn = document.getElementById('menubtn');
+function toggleMenu(open){ side.classList.toggle('open',open); scrim.classList.toggle('open',open); }
+menubtn.addEventListener('click', () => toggleMenu(!side.classList.contains('open')));
+scrim.addEventListener('click', () => toggleMenu(false));
+document.querySelectorAll('#nav a').forEach(a => a.addEventListener('click', () => toggleMenu(false)));
+</script>
+</body>
+</html>

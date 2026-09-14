@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCST Networking (100-150) — Study Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d1418; --bg-2:#0a1014; --panel:#152029; --panel-2:#19262f;
+    --line:#243440; --line-soft:#1d2b34; --text:#dde8ec; --muted:#8aa0a9; --muted-2:#5f7681;
+    --cyan:#3fb6c9; --cyan-dim:#2a6b76; --amber:#e0a458; --green:#5ec98c; --red:#e56a7a; --violet:#8fa6e6;
+    --shadow:0 10px 30px -12px rgba(0,0,0,.6); --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto;}}
+  body{
+    margin:0;
+    background:
+      radial-gradient(900px 500px at 82% -8%, rgba(63,182,201,.09), transparent 60%),
+      radial-gradient(700px 400px at -5% 8%, rgba(143,166,230,.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:'Inter',system-ui,sans-serif; font-size:15px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--cyan);text-decoration:none;}
+  code,.mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.86em;background:var(--bg-2);border:1px solid var(--line-soft);padding:1px 5px;border-radius:5px;color:#c8ecf2;}
+
+  .wrap{display:grid;grid-template-columns:288px 1fr;min-height:100vh;}
+  aside{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;
+    background:linear-gradient(180deg,var(--bg-2),var(--bg));border-right:1px solid var(--line);padding:26px 18px 40px;}
+  main{min-width:0;padding:0 clamp(20px,4vw,64px) 120px;}
+
+  .brand{display:flex;align-items:baseline;gap:9px;margin-bottom:4px;}
+  .brand .dot{width:9px;height:9px;border-radius:2px;background:var(--cyan);box-shadow:0 0 12px var(--cyan);flex:none;transform:translateY(-1px);}
+  .brand h1{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;letter-spacing:.2px;margin:0;}
+  .brand .v{color:var(--muted-2);font-family:'JetBrains Mono',monospace;font-size:11px;}
+  .sub{color:var(--muted);font-size:12px;margin:0 0 22px;padding-left:18px;}
+
+  nav .navgroup{font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:1px;color:var(--muted-2);margin:20px 0 8px;text-transform:uppercase;}
+  nav a{display:flex;gap:11px;align-items:flex-start;color:var(--muted);font-size:13.5px;line-height:1.35;
+    padding:8px 10px;border-radius:8px;margin:2px 0;border:1px solid transparent;transition:background .15s,color .15s,border-color .15s;}
+  nav a:hover{background:var(--panel);color:var(--text);}
+  nav a.active{background:var(--panel-2);color:var(--text);border-color:var(--line);}
+  nav a .cp{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);flex:none;width:26px;padding-top:1px;}
+  nav a.active .cp{color:var(--amber);}
+
+  header.hero{padding:52px 0 30px;border-bottom:1px solid var(--line);margin-bottom:8px;}
+  .kicker{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);margin:0 0 14px;}
+  .hero h2{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:clamp(28px,4vw,44px);line-height:1.08;margin:0 0 16px;letter-spacing:-.4px;}
+  .hero p.lead{color:var(--muted);max-width:64ch;font-size:16px;margin:0 0 26px;}
+  .stats{display:flex;flex-wrap:wrap;gap:14px;}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 18px;min-width:118px;}
+  .stat b{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:600;display:block;line-height:1;}
+  .stat span{color:var(--muted);font-size:12px;}
+  .stat.live b{color:var(--cyan);}
+
+  section.cp{padding:44px 0 8px;border-bottom:1px solid var(--line-soft);scroll-margin-top:14px;}
+  .cp-head{display:flex;align-items:center;gap:14px;margin-bottom:6px;}
+  .cp-badge{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--bg);background:var(--cyan);padding:3px 9px;border-radius:6px;font-weight:500;}
+  .cp-range{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted-2);}
+  section.cp h3{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:600;margin:2px 0 4px;letter-spacing:-.2px;}
+  .cp-note{color:var(--muted);font-size:13.5px;margin:0 0 22px;}
+
+  .mod{border-left:2px solid var(--line);padding:0 0 6px 22px;margin:0 0 30px;position:relative;}
+  .mod::before{content:"";position:absolute;left:-5px;top:6px;width:8px;height:8px;border-radius:50%;background:var(--panel-2);border:2px solid var(--cyan-dim);}
+  .mod h4{font-family:'Space Grotesk',sans-serif;font-size:16.5px;font-weight:600;margin:0 0 8px;display:flex;gap:10px;align-items:baseline;}
+  .mod h4 .num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);flex:none;}
+  .mod .intro{color:var(--muted);margin:0 0 14px;font-size:14px;}
+  .concept{margin:12px 0;}
+  .concept .ct{color:var(--cyan);font-weight:600;}
+  .concept.amber .ct{color:var(--amber);}
+  .concept p{margin:2px 0 0;color:#c4d2d8;}
+  .mod ul{margin:6px 0 0;padding-left:18px;}
+  .mod li{margin:4px 0;color:#c4d2d8;}
+  .mod li b{color:var(--text);font-weight:600;}
+  .watch{background:rgba(224,164,88,.08);border:1px solid rgba(224,164,88,.28);border-radius:8px;padding:10px 14px;margin-top:14px;font-size:13.5px;color:#f0d5ab;}
+  .watch b{color:var(--amber);}
+  .calc{background:var(--bg-2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:14px;font-size:13.5px;}
+  .calc .ch{font-family:'Space Grotesk',sans-serif;font-weight:600;color:var(--violet);margin-bottom:6px;}
+  .calc code{background:var(--panel);}
+
+  .tablewrap{overflow-x:auto;margin:6px 0 4px;border:1px solid var(--line);border-radius:var(--radius);}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:440px;}
+  caption{text-align:left;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;color:var(--text);padding:16px 0 10px;}
+  th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top;}
+  thead th{background:var(--panel-2);color:var(--cyan);font-weight:600;font-size:12px;letter-spacing:.3px;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:nth-child(even){background:rgba(255,255,255,.015);}
+
+  .quiz{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 22px 8px;margin:30px 0 6px;box-shadow:var(--shadow);}
+  .quiz-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px;}
+  .quiz-top h4{font-family:'Space Grotesk',sans-serif;font-size:17px;margin:0;display:flex;align-items:center;gap:9px;}
+  .quiz-top h4 svg{flex:none;}
+  .score{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--muted);background:var(--bg-2);border:1px solid var(--line);padding:5px 11px;border-radius:20px;}
+  .score b{color:var(--cyan);}
+  .q{padding:16px 0;border-top:1px solid var(--line-soft);}
+  .q:first-of-type{border-top:none;}
+  .q .qtext{font-weight:500;margin:0 0 12px;color:var(--text);}
+  .q .qtext .qn{font-family:'JetBrains Mono',monospace;color:var(--cyan);font-size:13px;margin-right:8px;}
+  .opts{display:flex;flex-direction:column;gap:8px;}
+  .opt{text-align:left;font:inherit;color:var(--text);cursor:pointer;background:var(--bg-2);border:1px solid var(--line);border-radius:9px;
+    padding:11px 14px;display:flex;gap:11px;align-items:flex-start;transition:border-color .15s,background .15s;}
+  .opt:hover:not(:disabled){border-color:var(--cyan-dim);background:var(--panel-2);}
+  .opt:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;}
+  .opt .key{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);flex:none;width:16px;padding-top:1px;}
+  .opt:disabled{cursor:default;}
+  .opt.correct{border-color:var(--green);background:rgba(94,201,140,.12);}
+  .opt.correct .key{color:var(--green);}
+  .opt.wrong{border-color:var(--red);background:rgba(229,106,122,.12);}
+  .opt.wrong .key{color:var(--red);}
+  .opt .mark{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:12px;flex:none;}
+  .opt.correct .mark{color:var(--green);}
+  .opt.wrong .mark{color:var(--red);}
+  .explain{margin-top:11px;font-size:13.5px;color:#cdd7e1;background:var(--bg-2);border-left:3px solid var(--cyan-dim);border-radius:0 8px 8px 0;padding:10px 14px;display:none;}
+  .explain.show{display:block;}
+  .explain b{color:var(--cyan);}
+  .quiz-actions{padding:14px 0 12px;display:flex;justify-content:flex-end;}
+  .reset{font:inherit;font-size:13px;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:8px;padding:7px 14px;cursor:pointer;transition:color .15s,border-color .15s;}
+  .reset:hover{color:var(--text);border-color:var(--cyan-dim);}
+  .reset:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;}
+
+  footer{padding:40px 0 0;color:var(--muted);font-size:13px;}
+  footer h3{font-family:'Space Grotesk',sans-serif;color:var(--text);font-size:18px;margin:0 0 10px;}
+  footer ul{padding-left:18px;}
+  footer li{margin:5px 0;}
+
+  .menubtn{display:none;}
+  @media (max-width:880px){
+    .wrap{grid-template-columns:1fr;}
+    aside{position:fixed;z-index:40;width:284px;left:0;top:0;transform:translateX(-100%);transition:transform .22s ease;box-shadow:var(--shadow);}
+    aside.open{transform:translateX(0);}
+    main{padding-top:64px;}
+    .menubtn{display:flex;align-items:center;gap:8px;position:fixed;z-index:50;top:12px;left:12px;
+      background:var(--panel-2);border:1px solid var(--line);color:var(--text);font:inherit;font-size:13px;padding:8px 13px;border-radius:9px;cursor:pointer;font-family:'Space Grotesk',sans-serif;}
+    .scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:30;}
+    .scrim.open{display:block;}
+  }
+</style>
+</head>
+<body>
+<button class="menubtn" id="menubtn" aria-label="Toggle navigation">☰ Contents</button>
+<div class="scrim" id="scrim"></div>
+<div class="wrap">
+
+  <aside id="side">
+    <div class="brand"><span class="dot"></span><h1>CCST Networking</h1></div>
+    <p class="sub"><span class="v">exam 100-150 · 6 domains · 50 min</span></p>
+    <nav id="nav">
+      <div class="navgroup">Overview</div>
+      <a href="#top"><span class="cp">◇</span><span>Exam map &amp; how to study</span></a>
+      <div class="navgroup">Domains</div>
+      <a href="#d1"><span class="cp">D1</span><span>Standards &amp; Concepts</span></a>
+      <a href="#d2"><span class="cp">D2</span><span>Addressing &amp; Subnet Formats</span></a>
+      <a href="#d3"><span class="cp">D3</span><span>Endpoints &amp; Media Types</span></a>
+      <a href="#d4"><span class="cp">D4</span><span>Infrastructure</span></a>
+      <a href="#d5"><span class="cp">D5</span><span>Diagnosing Problems</span></a>
+      <a href="#d6"><span class="cp">D6</span><span>Security</span></a>
+      <div class="navgroup">Reference</div>
+      <a href="#tables"><span class="cp">▤</span><span>Quick-reference tables</span></a>
+      <a href="#strategy"><span class="cp">✎</span><span>Exam strategy</span></a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero" id="top">
+      <p class="kicker">Cisco Certified Support Technician · 100-150 · ~40–50 questions · pass/fail</p>
+      <h2>Your study console for CCST Networking</h2>
+      <p class="lead">All six exam domains explained in depth, with a graded quiz at the end of each one that tells you why every answer is right or wrong. The exam is conceptual — no live CLI configuration — so this focuses on understanding, subnet math, and reading device output. Counters below track your progress.</p>
+      <div class="stats">
+        <div class="stat"><b>6</b><span>domains</span></div>
+        <div class="stat"><b>50m</b><span>time limit</span></div>
+        <div class="stat live"><b id="answered">0</b><span>questions answered</span></div>
+        <div class="stat live"><b id="totalscore">0%</b><span>overall accuracy</span></div>
+      </div>
+    </header>
+
+    <!-- ============ D1 ============ -->
+    <section class="cp" id="d1">
+      <div class="cp-head"><span class="cp-badge">D1</span><span class="cp-range">Standards and Concepts</span></div>
+      <h3>Standards and Concepts</h3>
+      <p class="cp-note">The models, protocols, and vocabulary everything else builds on: OSI and TCP/IP, how data is packaged, and how networks are classified and measured.</p>
+
+      <div class="mod"><h4><span class="num">1.1</span>The OSI model</h4>
+        <p class="intro">A seven-layer reference model that breaks communication into independent jobs so vendors can interoperate and technicians can pinpoint problems by layer.</p>
+        <div class="concept"><span class="ct">The seven layers (7 → 1)</span><p><b>7 Application</b> (user-facing services: HTTP, DNS), <b>6 Presentation</b> (formatting, encryption, compression), <b>5 Session</b> (starts/maintains conversations), <b>4 Transport</b> (end-to-end delivery: TCP/UDP, ports), <b>3 Network</b> (logical addressing and routing: IP), <b>2 Data Link</b> (framing and MAC addresses: Ethernet), <b>1 Physical</b> (bits on the wire: cables, voltages). Mnemonic top-down: "All People Seem To Need Data Processing."</p></div>
+        <div class="concept"><span class="ct">Protocol Data Units (PDUs)</span><p>The name of the data changes as it moves down the stack: <b>data</b> (upper layers) → <b>segment</b> (Transport) → <b>packet</b> (Network) → <b>frame</b> (Data Link) → <b>bits</b> (Physical). Knowing the PDU tells you the layer.</p></div>
+        <div class="concept"><span class="ct">Encapsulation</span><p>Each layer adds its own header (and Layer 2 adds a trailer) as data descends the stack; the receiver reverses the process (<b>decapsulation</b>). This is why the same data gets renamed at each layer.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">1.2</span>The TCP/IP model</h4>
+        <p class="intro">The practical model the internet actually runs on — fewer layers than OSI, mapping several OSI layers into one.</p>
+        <div class="concept"><span class="ct">The four layers</span><p><b>Application</b> (OSI 5–7), <b>Transport</b> (OSI 4), <b>Internet</b> (OSI 3), and <b>Network Access / Link</b> (OSI 1–2). It describes the same journey with less abstraction.</p></div>
+        <div class="concept"><span class="ct">TCP vs. UDP</span><p><b>TCP</b> is connection-oriented and reliable: it uses the three-way handshake, sequencing, and acknowledgments to guarantee ordered delivery (web, email, file transfer). <b>UDP</b> is connectionless and fast with no delivery guarantee — ideal for real-time voice/video and DNS where speed beats retransmission.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">1.3</span>Common protocols and ports</h4>
+        <p class="intro">The exam expects you to recognize well-known port numbers and what each protocol does.</p>
+        <div class="concept"><span class="ct">Ports you must know</span><p>FTP <b>20/21</b>, SSH <b>22</b>, Telnet <b>23</b>, SMTP <b>25</b>, DNS <b>53</b>, DHCP <b>67/68</b>, HTTP <b>80</b>, HTTPS <b>443</b>, POP3 <b>110</b>, IMAP <b>143</b>, SNMP <b>161</b>, NTP <b>123</b>, RDP <b>3389</b>. HTTPS, SSH, and DNS-over-TLS are the encrypted/secure choices.</p></div>
+        <div class="concept"><span class="ct">Support protocols</span><p><b>ARP</b> maps an IP to a MAC on the local segment; <b>DNS</b> resolves names to IPs; <b>DHCP</b> automatically leases IP/mask/gateway/DNS; <b>ICMP</b> carries ping/traceroute diagnostics.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">1.4</span>Network types, topologies &amp; performance</h4>
+        <div class="concept"><span class="ct">Network scopes</span><p><b>PAN</b> (personal, e.g. Bluetooth) → <b>LAN</b> (single site) → <b>CAN</b> (campus) → <b>MAN</b> (metro) → <b>WAN</b> (large geographic, e.g. the internet). <b>WLAN</b> is a wireless LAN.</p></div>
+        <div class="concept"><span class="ct">Physical vs. logical topology</span><p>The <b>physical</b> topology is how devices are actually cabled (star, mesh, bus, ring); the <b>logical</b> topology is how data actually flows, which can differ from the wiring.</p></div>
+        <div class="concept amber"><span class="ct">Bandwidth vs. throughput vs. latency</span><p><b>Bandwidth</b> is the theoretical maximum capacity of a link; <b>throughput</b> is the actual data rate achieved (always ≤ bandwidth, reduced by overhead and congestion); <b>latency</b> is delay. Tools like <b>iperf</b> measure real throughput.</p></div>
+        <div class="watch"><b>Watch for:</b> "bandwidth" (rated capacity) versus "throughput" (measured real-world rate) is a favorite distractor pair.</div>
+      </div>
+
+      <div class="quiz" data-quiz="1"></div>
+    </section>
+
+    <!-- ============ D2 ============ -->
+    <section class="cp" id="d2">
+      <div class="cp-head"><span class="cp-badge">D2</span><span class="cp-range">Addressing and Subnet Formats</span></div>
+      <h3>Addressing and Subnet Formats</h3>
+      <p class="cp-note">The math-heavy domain: how IPv4 and IPv6 addresses are structured, how subnetting divides a network, and how NAT bridges private and public space.</p>
+
+      <div class="mod"><h4><span class="num">2.1</span>IPv4 fundamentals</h4>
+        <p class="intro">An IPv4 address is 32 bits, written as four dotted-decimal octets (e.g. 192.168.1.10), split into a network portion and a host portion by the subnet mask.</p>
+        <div class="concept"><span class="ct">Classes &amp; default masks</span><p><b>Class A</b> 1–126 (/8), <b>Class B</b> 128–191 (/16), <b>Class C</b> 192–223 (/24). <b>Class D</b> (224–239) is multicast and <b>Class E</b> (240–255) is experimental. Classes are legacy but still tested.</p></div>
+        <div class="concept"><span class="ct">Private, public &amp; special addresses</span><p>RFC 1918 private ranges (not routable on the internet): <b>10.0.0.0/8</b>, <b>172.16.0.0/12</b> (172.16–172.31), <b>192.168.0.0/16</b>. <b>169.254.0.0/16</b> is APIPA (self-assigned when DHCP fails), <b>127.0.0.0/8</b> is loopback, and public addresses are globally routable.</p></div>
+        <div class="concept"><span class="ct">Subnet mask &amp; CIDR</span><p>The mask marks which bits are network (1s) vs. host (0s). <b>CIDR / slash notation</b> counts the network bits: <code>255.255.255.0</code> = <b>/24</b>, <code>255.255.255.128</code> = /25, <code>255.255.255.192</code> = /26, and so on.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">2.2</span>Subnetting</h4>
+        <p class="intro">Subnetting borrows host bits to create more, smaller networks — the single most testable skill in this domain.</p>
+        <div class="concept"><span class="ct">The three numbers per subnet</span><p>The <b>network address</b> is the first address (all host bits 0); the <b>broadcast address</b> is the last (all host bits 1); the <b>usable hosts</b> are everything in between.</p></div>
+        <div class="calc"><div class="ch">The two formulas to memorize</div>
+          <p><b>Usable hosts per subnet</b> = 2<sup>h</sup> − 2, where <code>h</code> = number of host bits (subtract 2 for the network and broadcast addresses).<br>
+          <b>Number of subnets</b> = 2<sup>s</sup>, where <code>s</code> = borrowed bits.<br>
+          Example: a <code>/27</code> has 32 − 27 = 5 host bits → 2<sup>5</sup> − 2 = <b>30 usable hosts</b>, and blocks step every 32 addresses (.0, .32, .64 …).</p>
+        </div>
+        <div class="concept"><span class="ct">VLSM</span><p><b>Variable Length Subnet Masking</b> lets you use different mask lengths within the same network so each subnet is sized to its need (e.g. a /30 for a two-host point-to-point link), avoiding wasted addresses.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">2.3</span>IPv6</h4>
+        <p class="intro">IPv6 uses 128-bit addresses written as eight groups of four hex digits, solving IPv4 exhaustion and removing the need for NAT and broadcasts.</p>
+        <div class="concept"><span class="ct">Shortening rules</span><p>Drop leading zeros in each group, and replace <em>one</em> run of consecutive all-zero groups with <code>::</code> (only once). Example: <code>2001:0db8:0000:0000:0000:ff00:0042:8329</code> → <code>2001:db8::ff00:42:8329</code>.</p></div>
+        <div class="concept"><span class="ct">Address types</span><p><b>Global unicast</b> (public, <code>2000::/3</code>), <b>link-local</b> (<code>fe80::/10</code>, auto-configured, never routed), <b>unique local</b> (<code>fc00::/7</code>, private-like), <b>multicast</b> (<code>ff00::/8</code>), and <b>loopback</b> (<code>::1</code>). IPv6 has <em>no broadcast</em> — it uses multicast instead.</p></div>
+        <div class="concept"><span class="ct">Autoconfiguration</span><p><b>SLAAC</b> lets a host build its own address from the router's prefix, and <b>EUI-64</b> derives the interface ID from the MAC address.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">2.4</span>NAT</h4>
+        <div class="concept"><span class="ct">Network Address Translation</span><p>NAT lets many private hosts share public addresses. <b>PAT</b> (port address translation, "NAT overload") maps many inside hosts to one public IP using different source ports — the setup on virtually every home router. NAT conserves public IPv4 and hides internal addressing.</p></div>
+        <div class="watch"><b>Watch for:</b> 169.254.x.x means the host failed to reach DHCP (APIPA); 172.16–172.31 is private but 172.32+ is public.</div>
+      </div>
+
+      <div class="quiz" data-quiz="2"></div>
+    </section>
+
+    <!-- ============ D3 ============ -->
+    <section class="cp" id="d3">
+      <div class="cp-head"><span class="cp-badge">D3</span><span class="cp-range">Endpoints and Media Types</span></div>
+      <h3>Endpoints and Media Types</h3>
+      <p class="cp-note">The physical layer: the devices that originate traffic and the copper, fiber, and wireless media that carry it.</p>
+
+      <div class="mod"><h4><span class="num">3.1</span>Endpoints</h4>
+        <div class="concept"><span class="ct">Endpoint devices</span><p>Any device that is a source or destination of traffic: PCs and laptops, servers, mobile phones and tablets, <b>IP phones</b>, network printers, and a growing range of <b>IoT</b> devices — Raspberry Pi and Arduino boards, smart speakers (Amazon Echo, Google Home), cameras, and appliances. Each needs an IP address and (usually) a MAC address.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">3.2</span>Copper media</h4>
+        <div class="concept"><span class="ct">Twisted-pair cabling</span><p><b>UTP</b> (unshielded) is the common LAN cable; <b>STP</b> adds shielding for noisy environments. Categories set the speed: <b>Cat5e</b> (1 Gbps), <b>Cat6</b> (up to 10 Gbps short runs), <b>Cat6a</b> (10 Gbps to 100 m). Terminated with <b>RJ-45</b> connectors using the <b>T568A/T568B</b> wiring standards.</p></div>
+        <div class="concept"><span class="ct">Straight-through vs. crossover</span><p>A <b>straight-through</b> cable connects unlike devices (PC↔switch, switch↔router). A <b>crossover</b> connects like devices (switch↔switch, PC↔PC) — though modern <b>Auto-MDIX</b> ports adjust automatically. Copper Ethernet runs are limited to <b>100 meters</b>.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">3.3</span>Fiber media</h4>
+        <div class="concept"><span class="ct">Single-mode vs. multimode</span><p><b>Single-mode</b> fiber has a tiny core and uses a laser to send light very long distances (kilometres) — used for backbones and long hauls. <b>Multimode</b> has a larger core, uses LED/VCSEL sources, and covers shorter distances at lower cost. Connectors include <b>LC, SC, ST</b>.</p></div>
+        <div class="concept amber"><span class="ct">Fiber vs. copper trade-offs</span><p>Fiber offers greater distance, higher bandwidth, and <b>immunity to EMI</b> and eavesdropping, but costs more and is more fragile to install. Copper is cheap and easy but limited to 100 m and susceptible to interference.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">3.4</span>Wireless &amp; NICs</h4>
+        <div class="concept"><span class="ct">Wi-Fi standards &amp; bands</span><p>802.11 generations: <b>b/g</b> (2.4 GHz, older), <b>n</b> (Wi-Fi 4, dual-band), <b>ac</b> (Wi-Fi 5, 5 GHz), <b>ax</b> (<b>Wi-Fi 6/6E</b>, adds 6 GHz). The <b>2.4 GHz</b> band travels farther and penetrates walls but is slower and congested; <b>5 GHz</b> is faster with more channels but shorter range.</p></div>
+        <div class="concept"><span class="ct">Identifiers</span><p>The <b>SSID</b> is the wireless network name; devices attach through a NIC. A <b>MAC address</b> is a 48-bit hardware address (12 hex digits), where the first half is the vendor <b>OUI</b>. <b>Cellular</b> (4G LTE, 5G) provides wide-area wireless; <b>PoE</b> delivers power and data over one Ethernet cable to APs, phones, and cameras.</p></div>
+      </div>
+
+      <div class="quiz" data-quiz="3"></div>
+    </section>
+
+    <!-- ============ D4 ============ -->
+    <section class="cp" id="d4">
+      <div class="cp-head"><span class="cp-badge">D4</span><span class="cp-range">Infrastructure</span></div>
+      <h3>Infrastructure</h3>
+      <p class="cp-note">The devices that move traffic and how you access and read them: switching, routing, and the Cisco CLI.</p>
+
+      <div class="mod"><h4><span class="num">4.1</span>Network devices</h4>
+        <div class="concept"><span class="ct">Device roles by layer</span><p>A <b>hub</b> (Layer 1) blindly repeats bits to all ports — obsolete. A <b>switch</b> (Layer 2) forwards frames using MAC addresses. A <b>router</b> (Layer 3) forwards packets between networks using IP addresses. A <b>firewall</b> filters traffic by policy, and a <b>wireless AP/WLC</b> bridges Wi-Fi clients onto the wired LAN.</p></div>
+        <div class="concept"><span class="ct">Collision vs. broadcast domains</span><p>Each switch port is its own <b>collision domain</b>; by default all switch ports share one <b>broadcast domain</b>. A router (or a VLAN) breaks up broadcast domains.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">4.2</span>Switching</h4>
+        <div class="concept"><span class="ct">MAC learning &amp; forwarding</span><p>A switch learns by recording the <b>source MAC</b> of each incoming frame against the port it arrived on, building a <b>MAC address table</b>. It then forwards frames only out the correct port; unknown destinations are flooded.</p></div>
+        <div class="concept"><span class="ct">VLANs &amp; trunking</span><p>A <b>VLAN</b> logically splits one switch into separate broadcast domains for segmentation and security. A <b>trunk</b> link carries multiple VLANs between switches, tagging frames with <b>802.1Q</b> so the other side knows which VLAN each frame belongs to.</p></div>
+        <div class="concept"><span class="ct">Spanning Tree Protocol</span><p><b>STP</b> prevents Layer 2 loops (which cause broadcast storms) by blocking redundant paths while keeping a backup ready if the active link fails.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">4.3</span>Routing</h4>
+        <div class="concept"><span class="ct">The routing table &amp; default gateway</span><p>A router chooses the best path from its <b>routing table</b>. Hosts send off-subnet traffic to their <b>default gateway</b> (the router's local interface). A <b>default route</b> (<code>0.0.0.0/0</code>) is the "last resort" for any destination not otherwise listed.</p></div>
+        <div class="concept"><span class="ct">Static vs. dynamic routing</span><p><b>Static</b> routes are manually configured — precise but not scalable. <b>Dynamic</b> routing protocols (<b>OSPF</b>, <b>EIGRP</b>, <b>RIP</b>) let routers learn and adapt automatically as the topology changes.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">4.4</span>Cisco device access &amp; CLI</h4>
+        <p class="intro">The exam is conceptual, but you must recognize how you connect to a device, the CLI mode hierarchy, and what common <code>show</code> commands report.</p>
+        <div class="concept"><span class="ct">Access methods</span><p><b>Console</b> access is out-of-band (direct cable, works even with no network). <b>SSH</b> is the secure in-band method; <b>Telnet</b> is its insecure cleartext predecessor and should be avoided.</p></div>
+        <div class="concept"><span class="ct">CLI mode hierarchy</span><p><b>User EXEC</b> (<code>Router&gt;</code>) is view-only; <code>enable</code> moves to <b>Privileged EXEC</b> (<code>Router#</code>) for full monitoring; <code>configure terminal</code> enters <b>Global Configuration</b> (<code>Router(config)#</code>). Use <code>?</code> for help and <kbd>Tab</kbd> to auto-complete.</p></div>
+        <div class="concept"><span class="ct">Key show commands</span><p><code>show ip interface brief</code> (interfaces + IPs + status at a glance), <code>show ip route</code> (routing table), <code>show running-config</code> (active config), <code>show version</code> (IOS/hardware), <code>show cdp neighbors</code> (directly connected Cisco devices), <code>show mac address-table</code> (learned MACs), <code>show interfaces</code> (detailed counters/errors).</p></div>
+      </div>
+
+      <div class="quiz" data-quiz="4"></div>
+    </section>
+
+    <!-- ============ D5 ============ -->
+    <section class="cp" id="d5">
+      <div class="cp-head"><span class="cp-badge">D5</span><span class="cp-range">Diagnosing Problems</span></div>
+      <h3>Diagnosing Problems</h3>
+      <p class="cp-note">A structured method plus the everyday tools that isolate where connectivity breaks.</p>
+
+      <div class="mod"><h4><span class="num">5.1</span>Troubleshooting methodology</h4>
+        <div class="concept"><span class="ct">A repeatable process</span><p>Work in order: <b>identify the problem</b>, <b>establish a theory</b> of probable cause, <b>test</b> the theory, <b>plan and implement</b> a fix, <b>verify</b> full functionality, and <b>document</b> what you did. Documenting prevents repeating dead ends and helps the next technician.</p></div>
+        <div class="concept"><span class="ct">Using the OSI model to isolate</span><p><b>Bottom-up</b> starts at the physical layer (is it plugged in, link light on?) and works up. <b>Top-down</b> starts at the application. <b>Divide-and-conquer</b> starts in the middle (often Layer 3 with a ping) and moves toward the fault.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">5.2</span>Diagnostic commands</h4>
+        <div class="concept"><span class="ct">Reachability &amp; path</span><p><b>ping</b> uses ICMP echo to test whether a host is reachable and how long it takes. <b>traceroute</b> (<code>tracert</code> on Windows) lists each router hop to the destination, revealing where a path breaks or slows.</p></div>
+        <div class="concept"><span class="ct">Host configuration &amp; names</span><p><b>ipconfig</b> (Windows) / <b>ifconfig</b> or <b>ip</b> (Linux/macOS) show a host's IP, mask, gateway, and DNS. <b>nslookup</b> (and <b>dig</b>) query DNS to confirm name-to-IP resolution. <b>arp</b> shows the IP-to-MAC cache; <b>netstat</b> shows active connections/ports.</p></div>
+        <div class="concept"><span class="ct">Packet analysis</span><p><b>Wireshark</b> captures and decodes actual traffic so you can see exactly what is (or isn't) on the wire — invaluable for confirming a theory at the packet level.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">5.3</span>Common problems &amp; symptoms</h4>
+        <div class="concept amber"><span class="ct">Read the symptom</span><p>A <b>169.254.x.x</b> address means DHCP failed. A <b>duplex/speed mismatch</b> causes slow throughput, late collisions, and interface errors. Wrong <b>gateway or DNS</b> lets local pings work but breaks internet or name resolution. A <b>VLAN mismatch</b> or bad/miswired cable breaks connectivity at Layer 1–2.</p></div>
+        <div class="watch"><b>Watch for:</b> if you can ping by IP but not by name, suspect <em>DNS</em>; if local works but remote doesn't, suspect the <em>default gateway/route</em>.</div>
+      </div>
+
+      <div class="quiz" data-quiz="5"></div>
+    </section>
+
+    <!-- ============ D6 ============ -->
+    <section class="cp" id="d6">
+      <div class="cp-head"><span class="cp-badge">D6</span><span class="cp-range">Security</span></div>
+      <h3>Security</h3>
+      <p class="cp-note">Foundational security as it touches networking: the guiding principles, how firewalls filter, and how to secure wireless.</p>
+
+      <div class="mod"><h4><span class="num">6.1</span>Foundational security concepts</h4>
+        <div class="concept"><span class="ct">The CIA triad</span><p><b>Confidentiality</b> (only authorized people can read data), <b>Integrity</b> (data isn't altered), and <b>Availability</b> (data/services are up when needed) — the three goals every control supports.</p></div>
+        <div class="concept"><span class="ct">AAA</span><p><b>Authentication</b> proves who you are, <b>Authorization</b> decides what you may do, and <b>Accounting</b> logs what you did. Often centralized with a RADIUS/TACACS+ server.</p></div>
+        <div class="concept"><span class="ct">Good practices &amp; common attacks</span><p>Apply <b>least privilege</b>, <b>MFA</b>, strong passwords, patching, and <b>VPNs</b> for remote access. Recognize common threats: <b>on-path attack</b> (the current inclusive term for man-in-the-middle), <b>DoS/DDoS</b>, <b>spoofing</b>, <b>phishing/social engineering</b>, and <b>malware</b>.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">6.2</span>Firewalls</h4>
+        <div class="concept"><span class="ct">How firewalls filter</span><p>A firewall enforces rules that <b>permit or deny</b> traffic based on source/destination IP, port, and protocol. Administrators block risky ports/protocols (e.g. Telnet 23) and allow only what's needed. Access control lists (ACLs) express these permit/deny rules and always end in an implicit deny.</p></div>
+        <div class="concept"><span class="ct">Stateful vs. stateless</span><p>A <b>stateful</b> firewall tracks active connections and automatically allows their return traffic — the modern default. A <b>stateless</b> firewall checks each packet independently against static rules.</p></div>
+      </div>
+
+      <div class="mod"><h4><span class="num">6.3</span>Wireless security</h4>
+        <div class="concept"><span class="ct">Encryption standards</span><p><b>WEP</b> is broken — never use it. <b>WPA2</b> (AES) is the baseline; <b>WPA3</b> is the current strongest, adding better key exchange and protection on open networks. Always choose the highest both ends support.</p></div>
+        <div class="concept amber"><span class="ct">PSK vs. Enterprise</span><p><b>Personal (PSK)</b> uses one shared passphrase for everyone — fine for homes/small offices. <b>Enterprise</b> uses <b>802.1X/EAP</b> with a <b>RADIUS</b> server so each user authenticates with unique credentials, which is far more secure and auditable.</p></div>
+        <div class="watch"><b>Watch for:</b> Cisco's current exam wording — "on-path attack" (not man-in-the-middle) and "primary/secondary" (not master/slave).</div>
+      </div>
+
+      <div class="quiz" data-quiz="6"></div>
+    </section>
+
+    <!-- Tables -->
+    <section class="cp" id="tables">
+      <div class="cp-head"><span class="cp-badge" style="background:var(--amber)">▤</span><span class="cp-range">high-yield</span></div>
+      <h3>Quick-reference tables</h3>
+      <p class="cp-note">The tables candidates come back to most. Memorize the OSI layers, ports, and private ranges cold.</p>
+
+      <div class="tablewrap">
+        <table>
+          <caption>OSI model</caption>
+          <thead><tr><th>#</th><th>Layer</th><th>PDU</th><th>Examples</th></tr></thead>
+          <tbody>
+            <tr><td>7</td><td>Application</td><td>Data</td><td>HTTP, DNS, DHCP, FTP</td></tr>
+            <tr><td>6</td><td>Presentation</td><td>Data</td><td>TLS, encryption, formats</td></tr>
+            <tr><td>5</td><td>Session</td><td>Data</td><td>Session setup/teardown</td></tr>
+            <tr><td>4</td><td>Transport</td><td>Segment</td><td>TCP, UDP, ports</td></tr>
+            <tr><td>3</td><td>Network</td><td>Packet</td><td>IP, ICMP, routers</td></tr>
+            <tr><td>2</td><td>Data Link</td><td>Frame</td><td>Ethernet, MAC, switches</td></tr>
+            <tr><td>1</td><td>Physical</td><td>Bits</td><td>Cables, connectors, signals</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tablewrap" style="margin-top:22px;">
+        <table>
+          <caption>Well-known ports</caption>
+          <thead><tr><th>Protocol</th><th>Port</th><th>Transport</th></tr></thead>
+          <tbody>
+            <tr><td>FTP</td><td>20 / 21</td><td>TCP</td></tr>
+            <tr><td>SSH</td><td>22</td><td>TCP</td></tr>
+            <tr><td>Telnet</td><td>23</td><td>TCP</td></tr>
+            <tr><td>SMTP</td><td>25</td><td>TCP</td></tr>
+            <tr><td>DNS</td><td>53</td><td>TCP/UDP</td></tr>
+            <tr><td>DHCP</td><td>67 / 68</td><td>UDP</td></tr>
+            <tr><td>HTTP</td><td>80</td><td>TCP</td></tr>
+            <tr><td>HTTPS</td><td>443</td><td>TCP</td></tr>
+            <tr><td>NTP</td><td>123</td><td>UDP</td></tr>
+            <tr><td>SNMP</td><td>161</td><td>UDP</td></tr>
+            <tr><td>RDP</td><td>3389</td><td>TCP</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tablewrap" style="margin-top:22px;">
+        <table>
+          <caption>IPv4 private &amp; special ranges</caption>
+          <thead><tr><th>Range</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>10.0.0.0/8</td><td>Private (RFC 1918)</td></tr>
+            <tr><td>172.16.0.0 – 172.31.255.255 (/12)</td><td>Private (RFC 1918)</td></tr>
+            <tr><td>192.168.0.0/16</td><td>Private (RFC 1918)</td></tr>
+            <tr><td>169.254.0.0/16</td><td>APIPA — signals DHCP failure</td></tr>
+            <tr><td>127.0.0.0/8</td><td>Loopback (localhost)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tablewrap" style="margin-top:22px;">
+        <table>
+          <caption>Common CIDR subnet quick-math</caption>
+          <thead><tr><th>Prefix</th><th>Mask</th><th>Usable hosts</th></tr></thead>
+          <tbody>
+            <tr><td>/24</td><td>255.255.255.0</td><td>254</td></tr>
+            <tr><td>/25</td><td>255.255.255.128</td><td>126</td></tr>
+            <tr><td>/26</td><td>255.255.255.192</td><td>62</td></tr>
+            <tr><td>/27</td><td>255.255.255.224</td><td>30</td></tr>
+            <tr><td>/28</td><td>255.255.255.240</td><td>14</td></tr>
+            <tr><td>/30</td><td>255.255.255.252</td><td>2 (point-to-point)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tablewrap" style="margin-top:22px;">
+        <table>
+          <caption>Cisco CLI modes &amp; diagnostic tools</caption>
+          <thead><tr><th>Item</th><th>What it is</th></tr></thead>
+          <tbody>
+            <tr><td>Router&gt;</td><td>User EXEC — view-only</td></tr>
+            <tr><td>Router#</td><td>Privileged EXEC — full monitoring (enter with <code>enable</code>)</td></tr>
+            <tr><td>Router(config)#</td><td>Global config (enter with <code>configure terminal</code>)</td></tr>
+            <tr><td>ping</td><td>Test reachability (ICMP echo)</td></tr>
+            <tr><td>traceroute / tracert</td><td>Show each hop to a destination</td></tr>
+            <tr><td>ipconfig / ifconfig</td><td>Show host IP, mask, gateway, DNS</td></tr>
+            <tr><td>nslookup</td><td>Query/verify DNS resolution</td></tr>
+            <tr><td>Wireshark</td><td>Capture and analyze packets</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer id="strategy">
+      <h3>Exam strategy</h3>
+      <ul>
+        <li>50 minutes for ~40–50 questions, reported pass/fail — pace yourself at roughly a minute per question and don't get stuck.</li>
+        <li>Subnetting (Domain 2) rewards drilling the two formulas until they're automatic; expect host-count and address-range questions.</li>
+        <li>The exam is conceptual — no live CLI configuration — so focus on <em>recognizing</em> device output and command purpose rather than typing configs.</li>
+        <li>Learn Cisco's current inclusive terms: "on-path attack" and "primary/secondary."</li>
+        <li>The free Cisco Networking Academy "Networking Basics" and "Networking Devices and Initial Configuration" courses align directly to this blueprint.</li>
+      </ul>
+      <p style="margin-top:22px;color:var(--muted-2);font-size:12px;">Study aid built from the public CCST Networking (100-150) exam blueprint. Always verify specifics against Cisco's official exam topics page.</p>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+const QUIZZES = {
+  1: {title:"Domain 1 — Standards and Concepts", questions:[
+    {q:"Which OSI layer handles logical addressing and routing (IP)?",
+     o:["Layer 2 — Data Link","Layer 3 — Network","Layer 4 — Transport","Layer 1 — Physical"], a:1,
+     e:"Layer 3 (Network) uses logical IP addresses and is where routers operate. Layer 2 uses MAC addresses; Layer 4 handles ports and end-to-end delivery."},
+    {q:"Which protocol is connection-oriented and guarantees ordered, reliable delivery?",
+     o:["UDP","ICMP","TCP","ARP"], a:2,
+     e:"TCP uses the three-way handshake, sequencing, and acknowledgments for reliability. UDP is connectionless and best-effort."},
+    {q:"Going down the stack, the PDU at the Network layer is called a:",
+     o:["Frame","Segment","Packet","Bit"], a:2,
+     e:"Order is data → segment (Transport) → packet (Network) → frame (Data Link) → bits (Physical)."},
+    {q:"What is the well-known port for HTTPS?",
+     o:["80","22","443","53"], a:2,
+     e:"HTTPS uses TCP 443. Port 80 is HTTP, 22 is SSH, and 53 is DNS."},
+    {q:"The measured, real-world data rate of a link (always at or below its rated capacity) is called:",
+     o:["Bandwidth","Throughput","Latency","Jitter"], a:1,
+     e:"Throughput is the actual achieved rate; bandwidth is the theoretical maximum. Overhead and congestion make throughput lower."},
+    {q:"A switch primarily operates at which OSI layer?",
+     o:["Layer 1","Layer 2","Layer 3","Layer 4"], a:1,
+     e:"Switches forward frames using MAC addresses at Layer 2. Routers operate at Layer 3."}
+  ]},
+  2: {title:"Domain 2 — Addressing and Subnet Formats", questions:[
+    {q:"Which address block is a private (RFC 1918) range?",
+     o:["172.32.0.0/12","172.16.0.0/12","169.254.0.0/16","11.0.0.0/8"], a:1,
+     e:"172.16.0.0/12 covers 172.16–172.31 and is private. 172.32.x is public, 169.254.x is APIPA, and 11.0.0.0 is public."},
+    {q:"How many usable host addresses are in a /27 subnet?",
+     o:["32","30","62","14"], a:1,
+     e:"A /27 has 32−27 = 5 host bits, so 2^5 − 2 = 30 usable hosts (minus network and broadcast)."},
+    {q:"The subnet mask 255.255.255.0 is written in CIDR as:",
+     o:["/23","/24","/25","/26"], a:1,
+     e:"255.255.255.0 = 24 network bits = /24 (254 usable hosts)."},
+    {q:"A workstation shows the address 169.254.14.9. This most likely means:",
+     o:["It has a valid public IP","DHCP failed and APIPA self-assigned an address","It is using IPv6","It is the default gateway"], a:1,
+     e:"169.254.0.0/16 is APIPA — the host could not reach a DHCP server and assigned itself a link-local address."},
+    {q:"Which IPv6 address type always begins with fe80::/10 and is never routed?",
+     o:["Global unicast","Link-local","Unique local","Multicast"], a:1,
+     e:"Link-local addresses (fe80::/10) are auto-configured on every interface and stay on the local link."},
+    {q:"Which is the correctly shortened form of 2001:0db8:0000:0000:0000:ff00:0042:8329?",
+     o:["2001:db8::ff00:42:8329","2001:db8:0:ff00::42:8329","2001:0db8::ff00::42:8329","2001:db8:ff00:42:8329::"], a:0,
+     e:"Drop leading zeros and compress one run of all-zero groups with :: (once). That yields 2001:db8::ff00:42:8329."}
+  ]},
+  3: {title:"Domain 3 — Endpoints and Media Types", questions:[
+    {q:"Which fiber type uses a laser and carries signals the farthest?",
+     o:["Multimode","Single-mode","Cat6a","Coaxial"], a:1,
+     e:"Single-mode fiber has a tiny core and uses a laser for long-distance runs; multimode covers shorter distances at lower cost."},
+    {q:"What is the maximum standard distance for a copper UTP Ethernet run?",
+     o:["55 meters","100 meters","300 meters","550 meters"], a:1,
+     e:"Copper twisted-pair Ethernet is limited to 100 meters; beyond that you need fiber or a repeater/switch."},
+    {q:"Which cable traditionally connects two like devices, such as switch-to-switch?",
+     o:["Straight-through","Crossover","Rollover/console","Fiber patch"], a:1,
+     e:"A crossover cable connects like devices; straight-through connects unlike devices. (Auto-MDIX now often removes the distinction.)"},
+    {q:"A key advantage of fiber over copper is that fiber is:",
+     o:["Cheaper to install","Immune to electromagnetic interference","Limited to 100 m","Easier to splice"], a:1,
+     e:"Fiber carries light, so it is immune to EMI and supports far greater distance and bandwidth — at higher cost."},
+    {q:"Wi-Fi 6 corresponds to which 802.11 amendment?",
+     o:["802.11n","802.11ac","802.11ax","802.11g"], a:2,
+     e:"Wi-Fi 6 is 802.11ax. Wi-Fi 5 is 802.11ac and Wi-Fi 4 is 802.11n."},
+    {q:"A MAC address is:",
+     o:["32 bits, shown in dotted decimal","48 bits, shown as 12 hex digits","128 bits, shown in hex groups","16 bits, assigned by DHCP"], a:1,
+     e:"A MAC address is a 48-bit hardware address written as 12 hexadecimal digits; the first 24 bits are the vendor OUI."}
+  ]},
+  4: {title:"Domain 4 — Infrastructure", questions:[
+    {q:"A switch builds its MAC address table by learning the:",
+     o:["Destination MAC of outgoing frames","Source MAC of incoming frames","IP address of each host","VLAN tag only"], a:1,
+     e:"The switch records the source MAC of each arriving frame against its ingress port, then forwards intelligently."},
+    {q:"Which technology prevents Layer 2 switching loops?",
+     o:["NAT","STP (Spanning Tree Protocol)","OSPF","DHCP"], a:1,
+     e:"STP blocks redundant paths to prevent loops and broadcast storms while keeping a backup path ready."},
+    {q:"The CLI prompt Router# indicates which mode?",
+     o:["User EXEC","Privileged EXEC","Global configuration","Interface configuration"], a:1,
+     e:"'#' is Privileged EXEC (reached with 'enable'). '>' is User EXEC; '(config)#' is global configuration."},
+    {q:"Which command shows a one-line summary of every interface with its IP and status?",
+     o:["show version","show ip interface brief","show mac address-table","show cdp neighbors"], a:1,
+     e:"'show ip interface brief' lists interfaces, their IP addresses, and up/down status at a glance."},
+    {q:"VLANs are primarily used to:",
+     o:["Segment a switch into separate broadcast domains","Encrypt wireless traffic","Assign IP addresses automatically","Prevent physical cable faults"], a:0,
+     e:"A VLAN logically divides a switch into multiple broadcast domains for segmentation and security."},
+    {q:"Which device forwards traffic between different networks based on IP addresses?",
+     o:["Hub","Switch","Router","Access point"], a:2,
+     e:"A router operates at Layer 3, forwarding packets between networks using IP addresses and its routing table."}
+  ]},
+  5: {title:"Domain 5 — Diagnosing Problems", questions:[
+    {q:"Which tool tests basic reachability to a host using ICMP echo?",
+     o:["ping","nslookup","netstat","ipconfig"], a:0,
+     e:"ping sends ICMP echo requests to confirm a host is reachable and to measure round-trip time."},
+    {q:"Which tool shows every router hop along the path to a destination?",
+     o:["ping","traceroute / tracert","arp","show version"], a:1,
+     e:"traceroute (tracert on Windows) reveals each hop, helping you find where a path breaks or slows."},
+    {q:"On a Windows PC, which command displays the IP address, mask, gateway, and DNS?",
+     o:["ifconfig","ipconfig","nslookup","route print"], a:1,
+     e:"ipconfig is the Windows command; ifconfig/ip are the Linux/macOS equivalents."},
+    {q:"You can ping a website by its IP but not by its name. The most likely cause is:",
+     o:["A bad Ethernet cable","A DNS problem","A duplex mismatch","A firewall blocking ICMP"], a:1,
+     e:"If IP works but names don't resolve, DNS is the prime suspect."},
+    {q:"A duplex mismatch between a switch port and a host typically causes:",
+     o:["A completely dead link","Slow performance with collisions and errors","An APIPA address","A routing loop"], a:1,
+     e:"Duplex mismatches let the link come up but cause late collisions, errors, and poor throughput."},
+    {q:"Which application captures and decodes actual packets for analysis?",
+     o:["Wireshark","nslookup","traceroute","Telnet"], a:0,
+     e:"Wireshark captures live traffic and decodes it so you can inspect exactly what is on the wire."}
+  ]},
+  6: {title:"Domain 6 — Security", questions:[
+    {q:"The CIA triad stands for:",
+     o:["Control, Integrity, Access","Confidentiality, Integrity, Availability","Confidentiality, Identity, Authorization","Cryptography, Integrity, Auditing"], a:1,
+     e:"CIA = Confidentiality, Integrity, Availability — the three core goals of security."},
+    {q:"In AAA, the first 'A' (Authentication) means:",
+     o:["Deciding what a user may access","Proving who the user is","Logging user activity","Encrypting user data"], a:1,
+     e:"Authentication proves identity; Authorization grants permissions; Accounting logs activity."},
+    {q:"A stateful firewall differs from a stateless one because it:",
+     o:["Only inspects one packet at a time","Tracks the state of active connections","Cannot block any ports","Works only on wireless"], a:1,
+     e:"A stateful firewall tracks connections and automatically permits their return traffic; stateless checks each packet in isolation."},
+    {q:"Which wireless security standard is the current strongest?",
+     o:["WEP","WPA","WPA2","WPA3"], a:3,
+     e:"WPA3 is the newest and strongest; WEP is broken and must not be used."},
+    {q:"Cisco's current inclusive term for a man-in-the-middle attack is:",
+     o:["On-path attack","Replay attack","Side-channel attack","Insider attack"], a:0,
+     e:"Modern Cisco exam wording uses 'on-path attack' instead of 'man-in-the-middle.'"},
+    {q:"WPA2/WPA3-Enterprise authenticates each user by using:",
+     o:["A single shared passphrase (PSK)","802.1X/EAP with a RADIUS server","MAC address filtering","Hiding the SSID"], a:1,
+     e:"Enterprise mode uses 802.1X/EAP against a RADIUS server for per-user credentials, unlike the shared key of Personal/PSK mode."}
+  ]}
+};
+
+const LETTERS = ["A","B","C","D","E"];
+const state = {};
+
+function buildQuiz(container){
+  const id = container.getAttribute('data-quiz');
+  const data = QUIZZES[id];
+  state[id] = {answered:new Set(), correct:0};
+
+  const top = document.createElement('div');
+  top.className = 'quiz-top';
+  top.innerHTML = `<h4><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3fb6c9" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>${data.title}</h4>
+    <span class="score" id="score-${id}">0 / ${data.questions.length}</span>`;
+  container.appendChild(top);
+
+  data.questions.forEach((question, qi) => {
+    const qEl = document.createElement('div');
+    qEl.className = 'q';
+    const qText = document.createElement('p');
+    qText.className = 'qtext';
+    qText.innerHTML = `<span class="qn">Q${qi+1}</span>${question.q}`;
+    qEl.appendChild(qText);
+
+    const opts = document.createElement('div');
+    opts.className = 'opts';
+    question.o.forEach((optText, oi) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.type = 'button';
+      btn.innerHTML = `<span class="key">${LETTERS[oi]}</span><span>${optText}</span><span class="mark"></span>`;
+      btn.addEventListener('click', () => choose(id, qi, oi, opts, qEl, question));
+      opts.appendChild(btn);
+    });
+    qEl.appendChild(opts);
+
+    const exp = document.createElement('div');
+    exp.className = 'explain';
+    exp.innerHTML = `<b>Why:</b> ${question.e}`;
+    qEl.appendChild(exp);
+
+    container.appendChild(qEl);
+  });
+
+  const actions = document.createElement('div');
+  actions.className = 'quiz-actions';
+  const reset = document.createElement('button');
+  reset.className = 'reset';
+  reset.type = 'button';
+  reset.textContent = 'Reset this quiz';
+  reset.addEventListener('click', () => { container.innerHTML=''; buildQuiz(container); updateGlobal(); });
+  actions.appendChild(reset);
+  container.appendChild(actions);
+}
+
+function choose(id, qi, oi, optsEl, qEl, question){
+  const s = state[id];
+  if (s.answered.has(qi)) return;
+  s.answered.add(qi);
+  const buttons = optsEl.querySelectorAll('.opt');
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    const mark = b.querySelector('.mark');
+    if (i === question.a){ b.classList.add('correct'); mark.textContent = '✓ correct'; }
+    if (i === oi && oi !== question.a){ b.classList.add('wrong'); mark.textContent = '✗ your pick'; }
+  });
+  if (oi === question.a) s.correct++;
+  qEl.querySelector('.explain').classList.add('show');
+  document.getElementById('score-'+id).innerHTML =
+    `<b>${s.correct}</b> / ${QUIZZES[id].questions.length}`;
+  updateGlobal();
+}
+
+function updateGlobal(){
+  let answered = 0, correct = 0;
+  Object.keys(state).forEach(id => { answered += state[id].answered.size; correct += state[id].correct; });
+  document.getElementById('answered').textContent = answered;
+  document.getElementById('totalscore').textContent = answered ? Math.round(correct/answered*100)+'%' : '0%';
+}
+
+document.querySelectorAll('.quiz').forEach(buildQuiz);
+
+const links = [...document.querySelectorAll('#nav a')];
+const map = {};
+links.forEach(l => { const id = l.getAttribute('href').slice(1); if(document.getElementById(id)) map[id]=l; });
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(en => {
+    if (en.isIntersecting){
+      links.forEach(l => l.classList.remove('active'));
+      const l = map[en.target.id]; if (l) l.classList.add('active');
+    }
+  });
+}, {rootMargin:'-20% 0px -70% 0px', threshold:0});
+Object.keys(map).forEach(id => obs.observe(document.getElementById(id)));
+
+const side = document.getElementById('side');
+const scrim = document.getElementById('scrim');
+const menubtn = document.getElementById('menubtn');
+function toggleMenu(open){ side.classList.toggle('open',open); scrim.classList.toggle('open',open); }
+menubtn.addEventListener('click', () => toggleMenu(!side.classList.contains('open')));
+scrim.addEventListener('click', () => toggleMenu(false));
+document.querySelectorAll('#nav a').forEach(a => a.addEventListener('click', () => toggleMenu(false)));
+</script>
+</body>
+</html>
