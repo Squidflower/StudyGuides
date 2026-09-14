@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cybersecurity Essentials — Mock Certification Exam</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0e141b; --bg-2:#0b1017; --panel:#161f2b; --panel-2:#1b2734;
+    --line:#26313f; --line-soft:#1f2a36; --text:#dfe7ee; --muted:#8b9bab; --muted-2:#647585;
+    --cyan:#54c6d8; --cyan-dim:#2f6f7a; --amber:#e0a458; --green:#5ec98c; --red:#e56a7a;
+    --shadow:0 10px 30px -12px rgba(0,0,0,.6); --radius:12px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;min-height:100vh;
+    background:
+      radial-gradient(900px 500px at 82% -8%, rgba(84,198,216,.08), transparent 60%),
+      radial-gradient(700px 400px at -5% 8%, rgba(224,164,88,.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:'Inter',system-ui,sans-serif; font-size:15px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .shell{max-width:900px;margin:0 auto;padding:clamp(20px,4vw,48px) clamp(16px,4vw,32px) 90px;}
+  code{font-family:'JetBrains Mono',monospace;font-size:.86em;background:var(--bg-2);border:1px solid var(--line-soft);padding:1px 5px;border-radius:5px;color:#cfe9ee;}
+  .hidden{display:none !important;}
+  button{font-family:inherit;}
+  :focus-visible{outline:2px solid var(--cyan);outline-offset:2px;}
+
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:26px;}
+  .brand .dot{width:10px;height:10px;border-radius:2px;background:var(--cyan);box-shadow:0 0 12px var(--cyan);}
+  .brand h1{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;margin:0;letter-spacing:.2px;}
+  .brand .v{color:var(--muted-2);font-family:'JetBrains Mono',monospace;font-size:11px;margin-left:auto;}
+
+  /* Start screen */
+  .kicker{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);margin:0 0 12px;}
+  .start h2{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:clamp(26px,4vw,40px);line-height:1.1;margin:0 0 14px;letter-spacing:-.4px;}
+  .start p.lead{color:var(--muted);max-width:60ch;font-size:16px;margin:0 0 28px;}
+  .rules{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;margin-bottom:26px;}
+  .rules h3{font-family:'Space Grotesk',sans-serif;font-size:15px;margin:0 0 12px;color:var(--text);}
+  .rules ul{margin:0;padding-left:18px;color:#cdd7e1;font-size:14px;}
+  .rules li{margin:6px 0;}
+  .rules b{color:var(--cyan);}
+  .modes{display:flex;flex-wrap:wrap;gap:14px;}
+  .modecard{flex:1 1 240px;background:var(--panel-2);border:1px solid var(--line);border-radius:var(--radius);padding:20px;cursor:pointer;text-align:left;color:var(--text);transition:border-color .15s,transform .1s;}
+  .modecard:hover{border-color:var(--cyan-dim);}
+  .modecard:active{transform:translateY(1px);}
+  .modecard .mt{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;margin-bottom:4px;}
+  .modecard .md{color:var(--muted);font-size:13px;}
+  .modecard .mgo{margin-top:14px;display:inline-block;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);}
+
+  /* Exam header */
+  .exhead{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,var(--bg) 70%,transparent);padding:8px 0 14px;margin-bottom:6px;}
+  .exbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 16px;}
+  .timer{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:500;color:var(--text);letter-spacing:1px;}
+  .timer.warn{color:var(--red);}
+  .timer .tl{display:block;font-family:'Inter';font-size:10px;color:var(--muted-2);letter-spacing:.5px;text-transform:uppercase;font-weight:500;}
+  .exprog{color:var(--muted);font-size:13px;font-family:'JetBrains Mono',monospace;}
+  .exprog b{color:var(--cyan);}
+  .exbar .spacer{flex:1;}
+  .btn{border:1px solid var(--line);background:var(--panel-2);color:var(--text);border-radius:9px;padding:9px 16px;font-size:14px;cursor:pointer;transition:border-color .15s,background .15s;}
+  .btn:hover{border-color:var(--cyan-dim);}
+  .btn.primary{background:var(--cyan);color:#08222a;border-color:var(--cyan);font-weight:600;}
+  .btn.primary:hover{filter:brightness(1.06);}
+  .btn.ghost{background:transparent;}
+  .btn:disabled{opacity:.4;cursor:default;}
+
+  /* Question */
+  .qcard{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px 24px 20px;box-shadow:var(--shadow);}
+  .qmeta{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .qtag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--bg);background:var(--cyan);padding:3px 9px;border-radius:6px;}
+  .qnum{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted-2);}
+  .flagbtn{margin-left:auto;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:6px 12px;font-size:12.5px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:color .15s,border-color .15s;}
+  .flagbtn:hover{color:var(--amber);border-color:var(--amber);}
+  .flagbtn.on{color:var(--amber);border-color:var(--amber);background:rgba(224,164,88,.1);}
+  .qtext{font-size:17px;font-weight:500;margin:0 0 18px;line-height:1.45;}
+  .opts{display:flex;flex-direction:column;gap:9px;}
+  .opt{text-align:left;font:inherit;color:var(--text);cursor:pointer;background:var(--bg-2);border:1px solid var(--line);border-radius:10px;
+    padding:13px 15px;display:flex;gap:12px;align-items:flex-start;transition:border-color .15s,background .15s;}
+  .opt:hover{border-color:var(--cyan-dim);background:var(--panel-2);}
+  .opt .key{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);flex:none;width:18px;padding-top:1px;}
+  .opt.sel{border-color:var(--cyan);background:rgba(84,198,216,.12);}
+  .opt.sel .key{color:var(--cyan);}
+  /* review states */
+  .opt.correct{border-color:var(--green);background:rgba(94,201,140,.13);}
+  .opt.correct .key{color:var(--green);}
+  .opt.wrong{border-color:var(--red);background:rgba(229,106,122,.13);}
+  .opt.wrong .key{color:var(--red);}
+  .opt .mk{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:12px;flex:none;}
+  .opt.correct .mk{color:var(--green);}
+  .opt.wrong .mk{color:var(--red);}
+
+  .navrow{display:flex;align-items:center;gap:12px;margin-top:20px;}
+  .navrow .spacer{flex:1;}
+
+  /* Palette */
+  .palette{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-top:18px;}
+  .palette .pt{font-family:'Space Grotesk',sans-serif;font-size:12px;color:var(--muted);margin-bottom:12px;display:flex;gap:16px;flex-wrap:wrap;}
+  .palette .pt span{display:inline-flex;align-items:center;gap:6px;}
+  .swatch{width:11px;height:11px;border-radius:3px;border:1px solid var(--line);display:inline-block;}
+  .swatch.a{background:var(--cyan-dim);border-color:var(--cyan);}
+  .swatch.f{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber) inset;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:7px;}
+  .pcell{aspect-ratio:1;border:1px solid var(--line);background:var(--bg-2);color:var(--muted);border-radius:7px;font-family:'JetBrains Mono',monospace;font-size:12px;cursor:pointer;transition:border-color .12s,background .12s;}
+  .pcell:hover{border-color:var(--cyan-dim);color:var(--text);}
+  .pcell.answered{background:var(--cyan-dim);border-color:var(--cyan);color:#eafafd;}
+  .pcell.flagged{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber) inset;}
+  .pcell.current{outline:2px solid var(--cyan);outline-offset:1px;}
+
+  .confirm{background:rgba(224,164,88,.1);border:1px solid rgba(224,164,88,.35);border-radius:10px;padding:14px 16px;margin-top:16px;font-size:14px;color:#f0d5ab;}
+  .confirm .cbtns{margin-top:12px;display:flex;gap:10px;}
+
+  /* Results */
+  .verdict{text-align:center;padding:36px 20px 28px;border-radius:var(--radius);border:1px solid var(--line);background:var(--panel);margin-bottom:22px;}
+  .verdict .big{font-family:'Space Grotesk',sans-serif;font-size:56px;font-weight:700;line-height:1;margin:0;}
+  .verdict.pass .big{color:var(--green);}
+  .verdict.fail .big{color:var(--red);}
+  .verdict .lbl{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;margin:8px 0 6px;}
+  .verdict.pass .lbl{color:var(--green);}
+  .verdict.fail .lbl{color:var(--red);}
+  .verdict .meta{color:var(--muted);font-size:14px;}
+  .verdict .meta b{color:var(--text);}
+  .breakdown{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:6px 20px 10px;margin-bottom:22px;}
+  .breakdown h3{font-family:'Space Grotesk',sans-serif;font-size:15px;margin:16px 0 6px;}
+  .brow{display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px solid var(--line-soft);}
+  .brow:first-of-type{border-top:none;}
+  .brow .bn{flex:1;font-size:13.5px;color:#cdd7e1;}
+  .brow .bbar{flex:1.4;height:8px;background:var(--bg-2);border-radius:6px;overflow:hidden;border:1px solid var(--line-soft);}
+  .brow .bfill{height:100%;background:var(--cyan);}
+  .brow .bsc{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--muted);width:56px;text-align:right;}
+  .revcontrols{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0 14px;align-items:center;}
+  .revcontrols .rt{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;margin-right:auto;}
+  .chip{border:1px solid var(--line);background:var(--panel-2);color:var(--muted);border-radius:20px;padding:6px 14px;font-size:12.5px;cursor:pointer;}
+  .chip.on{color:var(--bg);background:var(--cyan);border-color:var(--cyan);font-weight:600;}
+  .rev-q{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:14px;}
+  .rev-q .qmeta{margin-bottom:10px;}
+  .rev-q .qtext{font-size:15px;margin-bottom:12px;}
+  .explain{margin-top:12px;font-size:13.5px;color:#cdd7e1;background:var(--bg-2);border-left:3px solid var(--cyan-dim);border-radius:0 8px 8px 0;padding:10px 14px;}
+  .explain b{color:var(--cyan);}
+  .yourpick{font-size:12px;color:var(--muted-2);margin-top:8px;font-family:'JetBrains Mono',monospace;}
+
+  @media (max-width:560px){
+    .verdict .big{font-size:44px;}
+    .exbar{gap:10px;}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="brand"><span class="dot"></span><h1>Cybersecurity Essentials — Mock Certification Exam</h1><span class="v" id="brandv">v3.0 practice</span></div>
+
+  <!-- ============ START ============ -->
+  <section id="start" class="start">
+    <p class="kicker">Practice run · modeled on the course final exam</p>
+    <h2>Sit a full timed practice exam</h2>
+    <p class="lead">A realistic dry run across all seven checkpoint areas. Questions and answer choices are drawn fresh and shuffled each attempt, so you can retake it without memorizing positions.</p>
+
+    <div class="rules">
+      <h3>How it works</h3>
+      <ul>
+        <li>Questions are pulled at random from a larger pool and mixed across <b>all 7 checkpoints</b>.</li>
+        <li>There's a <b>countdown timer</b>; when it hits zero the exam auto-submits.</li>
+        <li>Answers are <b>not graded until you submit</b> — you can change them and <b>flag</b> questions to revisit.</li>
+        <li>Pass mark is <b>70%</b>, matching the course final.</li>
+        <li>After submitting you get a <b>pass/fail score, a per-checkpoint breakdown, and a full answer review</b> with explanations.</li>
+      </ul>
+    </div>
+
+    <div class="modes">
+      <button class="modecard" onclick="startExam(50,60)">
+        <div class="mt">Full mock exam</div>
+        <div class="md">50 questions · 60 minutes · closest to the real final</div>
+        <span class="mgo">Start full exam →</span>
+      </button>
+      <button class="modecard" onclick="startExam(20,24)">
+        <div class="mt">Quick set</div>
+        <div class="md">20 questions · 24 minutes · a fast check-in</div>
+        <span class="mgo">Start quick set →</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ EXAM ============ -->
+  <section id="exam" class="hidden">
+    <div class="exhead">
+      <div class="exbar">
+        <div class="timer" id="timer"><span class="tl">Time left</span><span id="timerval">60:00</span></div>
+        <div class="spacer"></div>
+        <div class="exprog">Question <b id="curnum">1</b> / <span id="totnum">50</span> &nbsp;·&nbsp; <span id="ansnum">0</span> answered</div>
+        <button class="btn primary" id="submitbtn" onclick="askSubmit()">Submit exam</button>
+      </div>
+    </div>
+
+    <div class="qcard">
+      <div class="qmeta">
+        <span class="qtag" id="qtag">CP1</span>
+        <span class="qnum" id="qnum">Question 1</span>
+        <button class="flagbtn" id="flagbtn" onclick="toggleFlag()">⚑ Flag</button>
+      </div>
+      <p class="qtext" id="qtext">—</p>
+      <div class="opts" id="opts"></div>
+    </div>
+
+    <div id="confirmbox"></div>
+
+    <div class="navrow">
+      <button class="btn ghost" id="prevbtn" onclick="go(-1)">← Previous</button>
+      <div class="spacer"></div>
+      <button class="btn" id="nextbtn" onclick="go(1)">Next →</button>
+    </div>
+
+    <div class="palette">
+      <div class="pt">
+        <span><span class="swatch a"></span> Answered</span>
+        <span><span class="swatch"></span> Unanswered</span>
+        <span><span class="swatch f"></span> Flagged</span>
+      </div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section id="results" class="hidden">
+    <div class="verdict" id="verdict">
+      <p class="big" id="scorebig">0%</p>
+      <div class="lbl" id="verdictlbl">—</div>
+      <div class="meta" id="verdictmeta">—</div>
+    </div>
+
+    <div class="breakdown" id="breakdown"></div>
+
+    <div class="revcontrols">
+      <span class="rt">Review answers</span>
+      <button class="chip on" id="chip-all" onclick="setFilter('all')">All</button>
+      <button class="chip" id="chip-wrong" onclick="setFilter('wrong')">Incorrect only</button>
+      <button class="chip" id="chip-flag" onclick="setFilter('flag')">Flagged</button>
+    </div>
+    <div id="review"></div>
+
+    <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;">
+      <button class="btn primary" onclick="location.reload()">Take another exam</button>
+      <button class="btn ghost" onclick="backToTop()">Back to top</button>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ============ QUESTION POOL ============ */
+const DOMAINS = {
+  CP1:"Network Security", CP2:"OS & Endpoint Security", CP3:"Principles, Practices & Processes",
+  CP4:"Firewalls, Cryptography & Cloud", CP5:"Evaluating Security Alerts",
+  CP6:"Vulnerability Assessment & Risk", CP7:"Incident Response"
+};
+
+const POOL = [
+  // ---- CP1 ----
+  {d:"CP1",q:"What is the key difference between a worm and a virus?",o:["A worm self-replicates and spreads across networks without a host file or user action","A virus spreads automatically over networks while a worm needs a host","A worm always encrypts files and demands ransom","A virus cannot attach itself to executable files"],a:0,e:"A worm is self-propagating and needs no host file or user action; a virus attaches to a host file and needs user action to spread."},
+  {d:"CP1",q:"Which protocol uses the three-way handshake and is targeted by a SYN flood?",o:["ICMP","UDP","TCP","ARP"],a:2,e:"TCP is connection-oriented (SYN, SYN-ACK, ACK). A SYN flood exhausts the half-open connection table."},
+  {d:"CP1",q:"In a DDoS attack, the compromised hosts that flood the target are collectively called a:",o:["Honeypot","Botnet of zombies","Sinkhole","Proxy chain"],a:1,e:"A botnet of zombie hosts, directed by a handler/C2, generates the distributed flood."},
+  {d:"CP1",q:"Which wireless setting is a genuine security control rather than weak obscurity?",o:["Hiding the SSID broadcast","MAC address filtering","WPA2 with AES/CCMP","Reducing transmit power"],a:2,e:"SSID hiding and MAC filtering are trivially bypassed; WPA2/WPA3 encryption is the real control."},
+  {d:"CP1",q:"A phishing attack aimed specifically at senior executives is called:",o:["Vishing","Whaling","Smishing","Tailgating"],a:1,e:"Whaling is spear phishing targeted at high-value individuals such as executives."},
+  {d:"CP1",q:"How does an IDS differ from an IPS?",o:["An IDS sits inline and drops traffic; an IPS only logs","An IDS detects and alerts but does not block; an IPS is inline and can drop traffic","Both only work on encrypted traffic","An IDS blocks traffic; an IPS only detects it"],a:1,e:"IDS is out-of-band (detect + alert); IPS is inline (detect + block)."},
+  {d:"CP1",q:"Which malware hides at the OS/kernel level to keep privileged access and evade detection?",o:["Adware","Rootkit","Logic bomb","Spam"],a:1,e:"A rootkit embeds deep in the OS to conceal itself and maintain privileged control."},
+  {d:"CP1",q:"A logic bomb executes its payload when:",o:["A user logs in for the first time","A specific date or event trigger is met","Any antivirus scan runs","The system is fully patched"],a:1,e:"A logic bomb lies dormant until a defined condition (a date or event) triggers it."},
+  {d:"CP1",q:"ARP spoofing/poisoning lets an attacker:",o:["Associate their MAC with another host's IP to intercept LAN traffic","Encrypt all traffic on the segment","Assign IP addresses to clients","Disable the DNS service"],a:0,e:"By poisoning ARP caches, the attacker maps their MAC to a victim's IP and intercepts traffic."},
+  {d:"CP1",q:"Which attack category manipulates people rather than exploiting a software flaw?",o:["Buffer overflow","Social engineering","SQL injection","Denial of service"],a:1,e:"Social engineering targets human trust (phishing, pretexting, tailgating)."},
+  {d:"CP1",q:"An attacker secretly relays and can alter traffic between two parties who believe they are communicating directly. This is a:",o:["Man-in-the-middle (on-path) attack","Brute-force attack","Replay-only attack","Port scan"],a:0,e:"A man-in-the-middle / on-path attack intercepts and can modify traffic between endpoints."},
+  {d:"CP1",q:"Using multiple independent layers of controls so no single failure is catastrophic is called:",o:["Defense in depth","Security through obscurity","Least privilege","Single sign-on"],a:0,e:"Defense in depth layers controls so a breach of one still meets others."},
+
+  // ---- CP2 ----
+  {d:"CP2",q:"In Linux, the permission string rwxr-xr-- expressed in octal is:",o:["755","754","644","775"],a:1,e:"rwx=7, r-x=5, r--=4 → 754."},
+  {d:"CP2",q:"Which Windows component stores low-level configuration and is a common malware persistence location?",o:["Task Manager","The Registry","Event Viewer","PowerShell"],a:1,e:"The Registry (HKLM/HKCU) holds autorun keys malware abuses for persistence."},
+  {d:"CP2",q:"On the McCumber Cube, which trio is the 'states of data' axis?",o:["Confidentiality, integrity, availability","Technology, policy, people","In transit, at rest, in process","Public, private, hybrid"],a:2,e:"States of data = in transit / at rest / in process. CIA is principles; tech/policy/people is safeguards."},
+  {d:"CP2",q:"Signature-based antimalware is best at detecting:",o:["Known malware matching a stored pattern","Only zero-day exploits","Insider threats","Weak passwords"],a:0,e:"Signatures catch known threats; heuristic/behavioral is needed for novel malware."},
+  {d:"CP2",q:"Encrypting a file stored on a USB drive protects which principle and data state?",o:["Integrity; data in process","Availability; data in transit","Confidentiality; data at rest","Confidentiality; data in transit"],a:2,e:"Encryption enforces confidentiality; a stored file is data at rest."},
+  {d:"CP2",q:"Which Linux command changes a file's permission bits?",o:["chown","chmod","chgrp","touch"],a:1,e:"chmod sets read/write/execute bits; chown changes ownership; chgrp changes group."},
+  {d:"CP2",q:"Which detection method can catch a zero-day that has no known signature?",o:["Signature-based scanning","Heuristic/behavioral analysis","Hash allow-listing","Port scanning"],a:1,e:"Heuristic/behavioral detection flags suspicious behavior, so it can catch novel threats."},
+  {d:"CP2",q:"On the McCumber Cube, 'technologies, policies & practices, and people' make up which axis?",o:["Principles","States of data","Safeguards (countermeasures)","Threat actors"],a:2,e:"That axis is the safeguards/countermeasures used to protect data."},
+  {d:"CP2",q:"Which Windows tool lets you view running processes and end an unresponsive application?",o:["Task Manager","Disk Cleanup","BitLocker","Registry Editor"],a:0,e:"Task Manager shows processes and resource use and can end hung apps."},
+
+  // ---- CP3 ----
+  {d:"CP3",q:"Which access control model grants permissions based on a user's job function?",o:["DAC","MAC","RBAC","Rule-based"],a:2,e:"RBAC ties permissions to roles/job functions."},
+  {d:"CP3",q:"Which statement about TACACS+ versus RADIUS is TRUE?",o:["TACACS+ encrypts the entire payload and separates the AAA functions","RADIUS encrypts the entire payload","TACACS+ runs over UDP","RADIUS is Cisco-proprietary"],a:0,e:"TACACS+ (Cisco, TCP) encrypts the whole payload and separates AAA; RADIUS (open, UDP) encrypts only the password and combines auth+authz."},
+  {d:"CP3",q:"Multifactor authentication requires:",o:["Two passwords","Factors from two or more different categories (know / have / are)","The same factor entered twice","One very strong password"],a:1,e:"MFA must combine different categories; two passwords is still single-factor."},
+  {d:"CP3",q:"The strictest model, enforcing labels and clearances centrally (common in military systems), is:",o:["DAC","MAC","RBAC","ABAC"],a:1,e:"MAC (mandatory access control) enforces labels/clearances; owners cannot override them."},
+  {d:"CP3",q:"Replacing Telnet with SSH for device management is an example of:",o:["Network segmentation","Hardening a network protocol","Physical security","Risk transfer"],a:1,e:"SSH encrypts management sessions, replacing cleartext Telnet — protocol hardening."},
+  {d:"CP3",q:"Granting users only the access needed to do their job is the principle of:",o:["Least privilege","Defense in depth","Non-repudiation","Redundancy"],a:0,e:"Least privilege limits each account to the minimum access required."},
+  {d:"CP3",q:"In the policy hierarchy, which document specifies mandatory, specific requirements?",o:["Guideline","Standard","Procedure","Mission statement"],a:1,e:"Standards make requirements mandatory and specific; guidelines are recommendations and procedures are step-by-step."},
+  {d:"CP3",q:"Separation of duties primarily helps prevent:",o:["Network latency","Fraud or abuse by requiring more than one person","Malware infection","Data-at-rest exposure"],a:1,e:"Splitting critical tasks across people means no single individual can commit and conceal fraud."},
+
+  // ---- CP4 ----
+  {d:"CP4",q:"A standard IPv4 ACL filters traffic based on:",o:["Source IP address only","Source and destination IP, protocol, and ports","MAC addresses","Application-layer content"],a:0,e:"Standard ACLs match source IP only; extended ACLs match source/dest IP, protocol, and ports."},
+  {d:"CP4",q:"Best practice says an extended ACL should be placed:",o:["Close to the destination","Close to the source","On a loopback interface","Placement makes no difference"],a:1,e:"Extended ACLs go near the source so unwanted traffic is dropped early; standard ACLs go near the destination."},
+  {d:"CP4",q:"To send a confidential file to Alice, you encrypt it with:",o:["Alice's private key","Your private key","Alice's public key","A shared hash value"],a:2,e:"Encrypt with the recipient's public key; only Alice's private key can decrypt it."},
+  {d:"CP4",q:"A digital signature provides integrity, authentication, and:",o:["Availability","Non-repudiation","Confidentiality","Compression"],a:1,e:"Signing with the sender's private key proves origin, giving non-repudiation."},
+  {d:"CP4",q:"A stateful firewall differs from a stateless one because it:",o:["Tracks the state of active connections in a table","Only inspects the application layer","Cannot perform NAT","Uses no rule set"],a:0,e:"A stateful firewall tracks connections and permits matching return traffic; stateless evaluates each packet alone."},
+  {d:"CP4",q:"Under the cloud shared-responsibility model for IaaS, the customer is generally responsible for:",o:["The physical data center","The hypervisor","The guest OS, applications, and data","The provider's network hardware"],a:2,e:"In IaaS the provider secures the infrastructure/hypervisor; the customer secures the guest OS, apps, and data."},
+  {d:"CP4",q:"Which technique is one-way (not reversible) and used to verify integrity?",o:["Symmetric encryption","Hashing","Asymmetric encryption","Steganography"],a:1,e:"Hashing produces a one-way digest to confirm data has not changed."},
+  {d:"CP4",q:"Symmetric encryption's main advantage over asymmetric encryption is that it is:",o:["Faster, making it ideal for bulk data","Able to avoid key exchange entirely","Impossible to brute force","Only used for signatures"],a:0,e:"Symmetric algorithms (e.g. AES) are fast and efficient for large volumes of data."},
+  {d:"CP4",q:"A digital certificate that binds a public key to a verified identity is issued by a:",o:["DNS server","Certificate Authority (CA)","DHCP server","Proxy"],a:1,e:"A CA issues X.509 certificates as part of a PKI to establish trust in public keys."},
+  {d:"CP4",q:"How does steganography differ from encryption?",o:["It hides the existence of the message rather than its content","It is always faster than encryption","It uses only public keys","It guarantees availability"],a:0,e:"Steganography conceals that a message exists; encryption hides the content but not its existence."},
+  {d:"CP4",q:"Which of the following is a symmetric encryption algorithm?",o:["RSA","AES","Diffie-Hellman","ECC"],a:1,e:"AES is symmetric (one shared key). RSA, Diffie-Hellman, and ECC are asymmetric."},
+  {d:"CP4",q:"In a Cisco Zone-Based Policy Firewall, traffic between two different zones by default is:",o:["Permitted automatically","Denied unless a policy explicitly permits it","Encrypted automatically","Logged but always allowed"],a:1,e:"Inter-zone traffic is denied unless a zone-pair policy permits it; same-zone traffic flows freely."},
+
+  // ---- CP5 ----
+  {d:"CP5",q:"An alert that fires on legitimate, benign activity is a:",o:["False negative","False positive","True positive","True negative"],a:1,e:"A false positive is an alarm raised when no real threat exists — analyst noise."},
+  {d:"CP5",q:"Which outcome is generally the most dangerous for a defender?",o:["False positive","True negative","False negative","True positive"],a:2,e:"A false negative means a real attack produced no alert, so it goes undetected."},
+  {d:"CP5",q:"Which technology most hinders inspection of network traffic?",o:["Syslog","HTTPS/TLS encryption","NetFlow","ICMP echo"],a:1,e:"TLS/HTTPS encrypts the payload, hiding content from monitoring tools."},
+  {d:"CP5",q:"In the Cyber Kill Chain, the phase where the attacker establishes remote control of the host is:",o:["Reconnaissance","Weaponization","Delivery","Command and Control (C2)"],a:3,e:"Command and Control is the channel used to remotely operate the compromised system."},
+  {d:"CP5",q:"MITRE ATT&CK is best described as:",o:["A knowledge base of adversary tactics and techniques","A firewall rule language","An encryption standard","A vulnerability scanner"],a:0,e:"ATT&CK maps real-world adversary tactics, techniques, and procedures (TTPs)."},
+  {d:"CP5",q:"Which tool gives visibility into who-talked-to-whom traffic flows even when the payload is encrypted?",o:["NetFlow","A password cracker","A CA","BitLocker"],a:0,e:"NetFlow records flow metadata (endpoints, volume) regardless of payload encryption."},
+  {d:"CP5",q:"The primary job of a SIEM is to:",o:["Aggregate and correlate logs from many sources into alerts","Encrypt data at rest","Assign IP addresses","Route packets between subnets"],a:0,e:"A SIEM centralizes and correlates log/event data to surface actionable alerts."},
+  {d:"CP5",q:"Snort is an example of a:",o:["Signature-based IDS/IPS","Public key algorithm","Cloud deployment model","Backup utility"],a:0,e:"Snort is a signature-based intrusion detection/prevention system with rule definitions."},
+
+  // ---- CP6 ----
+  {d:"CP6",q:"HIPAA regulates the protection of:",o:["Student education records","Health information","Payment-card data","EU personal data"],a:1,e:"HIPAA covers health information; FERPA = students, PCI DSS = card data, GDPR = EU personal data."},
+  {d:"CP6",q:"The annualized loss expectancy is calculated as:",o:["ALE = SLE × ARO","ALE = ARO ÷ SLE","ALE = SLE + ARO","ALE = asset value × threat count"],a:0,e:"ALE = SLE × ARO (single loss expectancy times annual rate of occurrence)."},
+  {d:"CP6",q:"Which activity actively exploits weaknesses to prove real-world impact?",o:["Vulnerability scanning","Penetration testing","Patch management","Log collection"],a:1,e:"Penetration testing exploits vulnerabilities; scanning only identifies them."},
+  {d:"CP6",q:"CVSS is used to:",o:["Encrypt data at rest","Score the severity of vulnerabilities","Filter packets","Manage user roles"],a:1,e:"CVSS produces a severity score from base, temporal, and environmental metric groups."},
+  {d:"CP6",q:"Buying cyber-insurance to handle a risk is an example of risk:",o:["Avoidance","Transfer","Acceptance","Mitigation"],a:1,e:"Insurance shifts the financial impact to a third party — risk transfer."},
+  {d:"CP6",q:"The five functions of the NIST Cybersecurity Framework are:",o:["Plan, Do, Check, Act, Review","Identify, Protect, Detect, Respond, Recover","Scan, Patch, Test, Deploy, Audit","Prevent, Detect, Deter, Delay, Deny"],a:1,e:"NIST CSF: Identify, Protect, Detect, Respond, Recover."},
+  {d:"CP6",q:"Which standard governs the handling of payment-card data?",o:["HIPAA","PCI DSS","SOX","FERPA"],a:1,e:"PCI DSS is the industry standard for protecting payment-card data."},
+  {d:"CP6",q:"STIX and TAXII are standards used for:",o:["Sharing and transporting threat intelligence","Subnetting IPv6","Encrypting disks","Load balancing"],a:0,e:"STIX expresses threat information; TAXII is the protocol that transports it."},
+  {d:"CP6",q:"The four standard ways to respond to a risk are avoid, transfer, mitigate, and:",o:["Ignore","Accept","Encrypt","Escalate"],a:1,e:"Accepting a risk means acknowledging it when the cost to fix outweighs the benefit."},
+
+  // ---- CP7 ----
+  {d:"CP7",q:"What is the correct NIST incident-response order?",o:["Detection → Preparation → Recovery → Containment","Preparation → Detection & Analysis → Containment/Eradication/Recovery → Post-incident","Containment → Preparation → Detection → Recovery","Recovery → Detection → Preparation → Analysis"],a:1,e:"NIST lifecycle: Preparation; Detection & Analysis; Containment, Eradication & Recovery; Post-incident."},
+  {d:"CP7",q:"The forensic 'order of volatility' tells you to:",o:["Collect the most volatile evidence, such as memory, first","Image the disk before capturing memory","Ignore RAM contents","Reboot the system before collecting anything"],a:0,e:"Volatile data (RAM, running state) is lost on power-off, so capture it first."},
+  {d:"CP7",q:"RPO (Recovery Point Objective) defines:",o:["How long recovery is allowed to take","The maximum acceptable amount of data loss, measured in time","The total cost of a breach","The number of backups retained"],a:1,e:"RPO is data-loss tolerance (how far back). RTO is the allowable time to restore service."},
+  {d:"CP7",q:"Chain of custody documentation exists to:",o:["Preserve the integrity and legal admissibility of evidence","Speed up disk encryption","Configure firewall zones","Assign user roles"],a:0,e:"It records who handled evidence, when, and how — keeping it trustworthy and admissible."},
+  {d:"CP7",q:"RTO (Recovery Time Objective) defines:",o:["The maximum acceptable time to restore a service after an incident","The amount of tolerable data loss","The encryption key length","The number of analysts on call"],a:0,e:"RTO is the downtime target — how quickly service must be restored."},
+  {d:"CP7",q:"In the incident-response lifecycle, documenting lessons learned to improve future response happens during:",o:["Preparation","Detection & Analysis","Containment","Post-incident activity"],a:3,e:"The post-incident phase reviews what happened and feeds improvements back into preparation."}
+];
+
+/* ============ ENGINE ============ */
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+let exam = null;
+
+function startExam(count, minutes){
+  const picked = shuffle(POOL).slice(0, Math.min(count, POOL.length));
+  const questions = picked.map(item => {
+    const order = shuffle(item.o.map((t,i)=>i));
+    const opts = order.map(i=>item.o[i]);
+    const correct = order.indexOf(item.a);
+    return {d:item.d, q:item.q, opts, correct, e:item.e, chosen:null, flagged:false};
+  });
+  exam = {questions, idx:0, total:questions.length, timeLeft:minutes*60, timerId:null, submitted:false};
+
+  document.getElementById('start').classList.add('hidden');
+  document.getElementById('results').classList.add('hidden');
+  document.getElementById('exam').classList.remove('hidden');
+  document.getElementById('totnum').textContent = exam.total;
+  buildGrid();
+  renderQuestion();
+  startTimer();
+  window.scrollTo(0,0);
+}
+
+function startTimer(){
+  updateTimer();
+  exam.timerId = setInterval(()=>{
+    exam.timeLeft--;
+    updateTimer();
+    if(exam.timeLeft<=0){ clearInterval(exam.timerId); doSubmit(true); }
+  },1000);
+}
+function updateTimer(){
+  const m=Math.floor(exam.timeLeft/60), s=exam.timeLeft%60;
+  document.getElementById('timerval').textContent = m+':'+String(s).padStart(2,'0');
+  document.getElementById('timer').classList.toggle('warn', exam.timeLeft<=300);
+}
+
+function renderQuestion(){
+  const Q = exam.questions[exam.idx];
+  document.getElementById('qtag').textContent = Q.d;
+  document.getElementById('qtag').title = DOMAINS[Q.d];
+  document.getElementById('qnum').textContent = 'Question '+(exam.idx+1);
+  document.getElementById('curnum').textContent = exam.idx+1;
+  document.getElementById('qtext').textContent = Q.q;
+
+  const flag = document.getElementById('flagbtn');
+  flag.classList.toggle('on', Q.flagged);
+  flag.innerHTML = Q.flagged ? '⚑ Flagged' : '⚑ Flag';
+
+  const box = document.getElementById('opts');
+  box.innerHTML='';
+  const L=['A','B','C','D','E'];
+  Q.opts.forEach((t,i)=>{
+    const b=document.createElement('button');
+    b.className='opt'+(Q.chosen===i?' sel':'');
+    b.type='button';
+    b.innerHTML = `<span class="key">${L[i]}</span><span>${t}</span>`;
+    b.onclick=()=>{ Q.chosen=i; renderQuestion(); updateGridCell(exam.idx); updateAnsCount(); };
+    box.appendChild(b);
+  });
+
+  document.getElementById('prevbtn').disabled = exam.idx===0;
+  document.getElementById('nextbtn').disabled = exam.idx===exam.total-1;
+  document.getElementById('confirmbox').innerHTML='';
+  markCurrent();
+}
+
+function go(dir){ const n=exam.idx+dir; if(n>=0&&n<exam.total){ exam.idx=n; renderQuestion(); } }
+function toggleFlag(){ const Q=exam.questions[exam.idx]; Q.flagged=!Q.flagged; renderQuestion(); updateGridCell(exam.idx); }
+
+function buildGrid(){
+  const g=document.getElementById('grid'); g.innerHTML='';
+  exam.questions.forEach((Q,i)=>{
+    const c=document.createElement('button');
+    c.className='pcell'; c.type='button'; c.textContent=i+1; c.id='pc-'+i;
+    c.onclick=()=>{ exam.idx=i; renderQuestion(); };
+    g.appendChild(c);
+  });
+  exam.questions.forEach((Q,i)=>updateGridCell(i));
+  markCurrent();
+}
+function updateGridCell(i){
+  const Q=exam.questions[i], c=document.getElementById('pc-'+i);
+  c.classList.toggle('answered', Q.chosen!==null);
+  c.classList.toggle('flagged', Q.flagged);
+}
+function markCurrent(){
+  exam.questions.forEach((Q,i)=>document.getElementById('pc-'+i).classList.toggle('current', i===exam.idx));
+}
+function updateAnsCount(){
+  const n=exam.questions.filter(q=>q.chosen!==null).length;
+  document.getElementById('ansnum').textContent=n;
+}
+
+function askSubmit(){
+  const un=exam.questions.filter(q=>q.chosen===null).length;
+  const box=document.getElementById('confirmbox');
+  if(un>0){
+    box.innerHTML = `<div class="confirm">You have <b>${un}</b> unanswered question${un>1?'s':''}. Unanswered questions are counted as incorrect.
+      <div class="cbtns"><button class="btn primary" onclick="doSubmit(false)">Submit anyway</button>
+      <button class="btn ghost" onclick="document.getElementById('confirmbox').innerHTML=''">Keep working</button></div></div>`;
+    box.scrollIntoView({behavior:'smooth',block:'center'});
+  } else {
+    box.innerHTML = `<div class="confirm">Ready to submit and see your score?
+      <div class="cbtns"><button class="btn primary" onclick="doSubmit(false)">Submit exam</button>
+      <button class="btn ghost" onclick="document.getElementById('confirmbox').innerHTML=''">Keep working</button></div></div>`;
+    box.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+}
+
+let reviewFilter='all';
+function doSubmit(timeUp){
+  if(exam.submitted) return;
+  exam.submitted=true;
+  if(exam.timerId) clearInterval(exam.timerId);
+
+  const correct = exam.questions.filter(q=>q.chosen===q.correct).length;
+  const pct = Math.round(correct/exam.total*100);
+  const pass = pct>=70;
+
+  document.getElementById('exam').classList.add('hidden');
+  document.getElementById('results').classList.remove('hidden');
+
+  const v=document.getElementById('verdict');
+  v.className='verdict '+(pass?'pass':'fail');
+  document.getElementById('scorebig').textContent=pct+'%';
+  document.getElementById('verdictlbl').textContent = pass?'PASS':'NOT YET';
+  const usedM=Math.floor((exam.total*0+ (examMinutesUsed()))/60);
+  document.getElementById('verdictmeta').innerHTML =
+    `<b>${correct}</b> of <b>${exam.total}</b> correct · pass mark 70%` +
+    (timeUp?' · <b>time expired</b>':'') +
+    ` · time used <b>${fmtUsed()}</b>`;
+
+  buildBreakdown();
+  setFilter('all');
+  window.scrollTo(0,0);
+}
+
+let _startSeconds=null;
+function examMinutesUsed(){ return 0; }
+function fmtUsed(){
+  // time used = initial - remaining; initial known from mode via total? store separately
+  const used = exam._initial - exam.timeLeft;
+  const m=Math.floor(used/60), s=used%60;
+  return m+':'+String(s).padStart(2,'0');
+}
+
+function buildBreakdown(){
+  const agg={};
+  Object.keys(DOMAINS).forEach(k=>agg[k]={c:0,t:0});
+  exam.questions.forEach(q=>{ agg[q.d].t++; if(q.chosen===q.correct) agg[q.d].c++; });
+  let html='<h3>By checkpoint</h3>';
+  Object.keys(DOMAINS).forEach(k=>{
+    if(agg[k].t===0) return;
+    const pct=Math.round(agg[k].c/agg[k].t*100);
+    html += `<div class="brow"><div class="bn">${DOMAINS[k]}</div>
+      <div class="bbar"><div class="bfill" style="width:${pct}%;background:${pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)'}"></div></div>
+      <div class="bsc">${agg[k].c}/${agg[k].t}</div></div>`;
+  });
+  document.getElementById('breakdown').innerHTML=html;
+}
+
+function setFilter(f){
+  reviewFilter=f;
+  ['all','wrong','flag'].forEach(x=>document.getElementById('chip-'+x).classList.toggle('on',x===f));
+  renderReview();
+}
+function renderReview(){
+  const L=['A','B','C','D','E'];
+  const wrap=document.getElementById('review'); wrap.innerHTML='';
+  let shown=0;
+  exam.questions.forEach((Q,i)=>{
+    const isCorrect=Q.chosen===Q.correct;
+    if(reviewFilter==='wrong' && isCorrect) return;
+    if(reviewFilter==='flag' && !Q.flagged) return;
+    shown++;
+    const optHtml=Q.opts.map((t,oi)=>{
+      let cls='opt';
+      if(oi===Q.correct) cls+=' correct';
+      else if(oi===Q.chosen) cls+=' wrong';
+      let mk='';
+      if(oi===Q.correct) mk='<span class="mk">✓ correct</span>';
+      else if(oi===Q.chosen) mk='<span class="mk">✗ your pick</span>';
+      return `<div class="${cls}"><span class="key">${L[oi]}</span><span>${t}</span>${mk}</div>`;
+    }).join('');
+    const pick = Q.chosen===null ? 'Left blank' : ('You chose '+L[Q.chosen]);
+    wrap.innerHTML += `<div class="rev-q">
+      <div class="qmeta"><span class="qtag" title="${DOMAINS[Q.d]}">${Q.d}</span>
+      <span class="qnum">Question ${i+1}</span>
+      ${Q.flagged?'<span class="flagbtn on" style="margin-left:auto;pointer-events:none;">⚑ Flagged</span>':''}</div>
+      <p class="qtext">${Q.q}</p>
+      <div class="opts">${optHtml}</div>
+      <div class="yourpick">${pick}${isCorrect?' · correct':(Q.chosen!==null?' · incorrect':'')}</div>
+      <div class="explain"><b>Why:</b> ${Q.e}</div></div>`;
+  });
+  if(shown===0) wrap.innerHTML='<p style="color:var(--muted);font-size:14px;">Nothing to show for this filter — nice work.</p>';
+}
+
+function backToTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
+
+/* store initial time when exam starts */
+const _origStart = startExam;
+startExam = function(count, minutes){ _origStart(count, minutes); exam._initial = minutes*60; };
+</script>
+</body>
+</html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCST IT Support (100-140) — Mock Exam</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#10131b; --bg-2:#0c0f16; --panel:#191d29; --panel-2:#1e2431;
+    --line:#2b3242; --line-soft:#232937; --text:#e2e5ee; --muted:#9aa0b4; --muted-2:#6b7186;
+    --cyan:#6e8bef; --cyan-dim:#3d4c86; --amber:#e0a458; --green:#5ec98c; --red:#e56a7a;
+    --shadow:0 10px 30px -12px rgba(0,0,0,.6); --radius:12px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;
+    background:radial-gradient(900px 500px at 82% -8%, rgba(110,139,239,.10), transparent 60%),radial-gradient(700px 400px at -5% 8%, rgba(180,138,230,.06), transparent 55%),var(--bg);
+    color:var(--text); font-family:'Inter',system-ui,sans-serif; font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased;}
+  .shell{max-width:900px;margin:0 auto;padding:clamp(20px,4vw,48px) clamp(16px,4vw,32px) 90px;}
+  code{font-family:'JetBrains Mono',monospace;font-size:.86em;background:var(--bg-2);border:1px solid var(--line-soft);padding:1px 5px;border-radius:5px;color:#d3dbff;}
+  .hidden{display:none !important;}
+  button{font-family:inherit;}
+  :focus-visible{outline:2px solid var(--cyan);outline-offset:2px;}
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:26px;}
+  .brand .dot{width:10px;height:10px;border-radius:2px;background:var(--cyan);box-shadow:0 0 12px var(--cyan);}
+  .brand h1{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;margin:0;letter-spacing:.2px;}
+  .brand .v{color:var(--muted-2);font-family:'JetBrains Mono',monospace;font-size:11px;margin-left:auto;}
+  .kicker{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);margin:0 0 12px;}
+  .start h2{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:clamp(26px,4vw,40px);line-height:1.1;margin:0 0 14px;letter-spacing:-.4px;}
+  .start p.lead{color:var(--muted);max-width:60ch;font-size:16px;margin:0 0 28px;}
+  .rules{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;margin-bottom:26px;}
+  .rules h3{font-family:'Space Grotesk',sans-serif;font-size:15px;margin:0 0 12px;color:var(--text);}
+  .rules ul{margin:0;padding-left:18px;color:#cdd2e1;font-size:14px;} .rules li{margin:6px 0;} .rules b{color:var(--cyan);}
+  .modes{display:flex;flex-wrap:wrap;gap:14px;}
+  .modecard{flex:1 1 240px;background:var(--panel-2);border:1px solid var(--line);border-radius:var(--radius);padding:20px;cursor:pointer;text-align:left;color:var(--text);transition:border-color .15s,transform .1s;}
+  .modecard:hover{border-color:var(--cyan-dim);} .modecard:active{transform:translateY(1px);}
+  .modecard .mt{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;margin-bottom:4px;}
+  .modecard .md{color:var(--muted);font-size:13px;} .modecard .mgo{margin-top:14px;display:inline-block;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);}
+  .exhead{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,var(--bg) 70%,transparent);padding:8px 0 14px;margin-bottom:6px;}
+  .exbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 16px;}
+  .timer{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:500;color:var(--text);letter-spacing:1px;}
+  .timer.warn{color:var(--red);} .timer .tl{display:block;font-family:'Inter';font-size:10px;color:var(--muted-2);letter-spacing:.5px;text-transform:uppercase;font-weight:500;}
+  .exprog{color:var(--muted);font-size:13px;font-family:'JetBrains Mono',monospace;} .exprog b{color:var(--cyan);}
+  .exbar .spacer{flex:1;}
+  .btn{border:1px solid var(--line);background:var(--panel-2);color:var(--text);border-radius:9px;padding:9px 16px;font-size:14px;cursor:pointer;transition:border-color .15s,background .15s;}
+  .btn:hover{border-color:var(--cyan-dim);} .btn.primary{background:var(--cyan);color:#0b1330;border-color:var(--cyan);font-weight:600;} .btn.primary:hover{filter:brightness(1.06);}
+  .btn.ghost{background:transparent;} .btn:disabled{opacity:.4;cursor:default;}
+  .qcard{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px 24px 20px;box-shadow:var(--shadow);}
+  .qmeta{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .qtag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--bg);background:var(--cyan);padding:3px 9px;border-radius:6px;}
+  .qnum{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted-2);}
+  .flagbtn{margin-left:auto;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:6px 12px;font-size:12.5px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:color .15s,border-color .15s;}
+  .flagbtn:hover{color:var(--amber);border-color:var(--amber);} .flagbtn.on{color:var(--amber);border-color:var(--amber);background:rgba(224,164,88,.1);}
+  .qtext{font-size:17px;font-weight:500;margin:0 0 18px;line-height:1.45;}
+  .opts{display:flex;flex-direction:column;gap:9px;}
+  .opt{text-align:left;font:inherit;color:var(--text);cursor:pointer;background:var(--bg-2);border:1px solid var(--line);border-radius:10px;padding:13px 15px;display:flex;gap:12px;align-items:flex-start;transition:border-color .15s,background .15s;}
+  .opt:hover{border-color:var(--cyan-dim);background:var(--panel-2);}
+  .opt .key{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);flex:none;width:18px;padding-top:1px;}
+  .opt.sel{border-color:var(--cyan);background:rgba(110,139,239,.14);} .opt.sel .key{color:var(--cyan);}
+  .opt.correct{border-color:var(--green);background:rgba(94,201,140,.13);} .opt.correct .key{color:var(--green);}
+  .opt.wrong{border-color:var(--red);background:rgba(229,106,122,.13);} .opt.wrong .key{color:var(--red);}
+  .opt .mk{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:12px;flex:none;} .opt.correct .mk{color:var(--green);} .opt.wrong .mk{color:var(--red);}
+  .navrow{display:flex;align-items:center;gap:12px;margin-top:20px;} .navrow .spacer{flex:1;}
+  .palette{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-top:18px;}
+  .palette .pt{font-family:'Space Grotesk',sans-serif;font-size:12px;color:var(--muted);margin-bottom:12px;display:flex;gap:16px;flex-wrap:wrap;}
+  .palette .pt span{display:inline-flex;align-items:center;gap:6px;}
+  .swatch{width:11px;height:11px;border-radius:3px;border:1px solid var(--line);display:inline-block;}
+  .swatch.a{background:var(--cyan-dim);border-color:var(--cyan);} .swatch.f{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber) inset;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:7px;}
+  .pcell{aspect-ratio:1;border:1px solid var(--line);background:var(--bg-2);color:var(--muted);border-radius:7px;font-family:'JetBrains Mono',monospace;font-size:12px;cursor:pointer;transition:border-color .12s,background .12s;}
+  .pcell:hover{border-color:var(--cyan-dim);color:var(--text);}
+  .pcell.answered{background:var(--cyan-dim);border-color:var(--cyan);color:#eef1ff;}
+  .pcell.flagged{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber) inset;}
+  .pcell.current{outline:2px solid var(--cyan);outline-offset:1px;}
+  .confirm{background:rgba(224,164,88,.1);border:1px solid rgba(224,164,88,.35);border-radius:10px;padding:14px 16px;margin-top:16px;font-size:14px;color:#f0d5ab;}
+  .confirm .cbtns{margin-top:12px;display:flex;gap:10px;}
+  .verdict{text-align:center;padding:36px 20px 28px;border-radius:var(--radius);border:1px solid var(--line);background:var(--panel);margin-bottom:22px;}
+  .verdict .big{font-family:'Space Grotesk',sans-serif;font-size:56px;font-weight:700;line-height:1;margin:0;}
+  .verdict.pass .big{color:var(--green);} .verdict.fail .big{color:var(--red);}
+  .verdict .lbl{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;margin:8px 0 6px;}
+  .verdict.pass .lbl{color:var(--green);} .verdict.fail .lbl{color:var(--red);}
+  .verdict .meta{color:var(--muted);font-size:14px;} .verdict .meta b{color:var(--text);}
+  .breakdown{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:6px 20px 10px;margin-bottom:22px;}
+  .breakdown h3{font-family:'Space Grotesk',sans-serif;font-size:15px;margin:16px 0 6px;}
+  .brow{display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px solid var(--line-soft);} .brow:first-of-type{border-top:none;}
+  .brow .bn{flex:1;font-size:13.5px;color:#cdd2e1;} .brow .bbar{flex:1.4;height:8px;background:var(--bg-2);border-radius:6px;overflow:hidden;border:1px solid var(--line-soft);}
+  .brow .bfill{height:100%;background:var(--cyan);} .brow .bsc{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--muted);width:56px;text-align:right;}
+  .revcontrols{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0 14px;align-items:center;}
+  .revcontrols .rt{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;margin-right:auto;}
+  .chip{border:1px solid var(--line);background:var(--panel-2);color:var(--muted);border-radius:20px;padding:6px 14px;font-size:12.5px;cursor:pointer;}
+  .chip.on{color:var(--bg);background:var(--cyan);border-color:var(--cyan);font-weight:600;}
+  .rev-q{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:14px;}
+  .rev-q .qmeta{margin-bottom:10px;} .rev-q .qtext{font-size:15px;margin-bottom:12px;}
+  .explain{margin-top:12px;font-size:13.5px;color:#cdd2e1;background:var(--bg-2);border-left:3px solid var(--cyan-dim);border-radius:0 8px 8px 0;padding:10px 14px;} .explain b{color:var(--cyan);}
+  .yourpick{font-size:12px;color:var(--muted-2);margin-top:8px;font-family:'JetBrains Mono',monospace;}
+  @media (max-width:560px){ .verdict .big{font-size:44px;} .exbar{gap:10px;} }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="brand"><span class="dot"></span><h1>CCST IT Support — Mock Exam</h1><span class="v">exam 100-140 practice</span></div>
+
+  <section id="start" class="start">
+    <p class="kicker">Practice run · modeled on the CCST IT Support (100-140) exam</p>
+    <h2>Sit a full timed practice exam</h2>
+    <p class="lead">A realistic, scenario-based dry run across all six exam domains. Questions and answer choices are drawn fresh and shuffled each attempt, so you can retake it without memorizing positions.</p>
+    <div class="rules">
+      <h3>How it works</h3>
+      <ul>
+        <li>Questions are pulled at random from a larger pool and mixed across <b>all 6 domains</b>.</li>
+        <li>A <b>countdown timer</b> mirrors the real 50-minute limit; when it hits zero the exam auto-submits.</li>
+        <li>Answers are <b>not graded until you submit</b> — you can change them and <b>flag</b> questions to revisit.</li>
+        <li>Pass mark here is set to <b>70%</b> as a study benchmark (Cisco reports the real exam as pass/fail only).</li>
+        <li>Many items are <b>scenario-based</b> — pick what a good technician would actually do (escalate, document, get consent, protect PII).</li>
+        <li>After submitting you get a <b>score, a per-domain breakdown, and a full answer review</b> with explanations.</li>
+      </ul>
+    </div>
+    <div class="modes">
+      <button class="modecard" onclick="startExam(50,50)">
+        <div class="mt">Full mock exam</div><div class="md">50 questions · 50 minutes · matches the real time limit</div>
+        <span class="mgo">Start full exam →</span>
+      </button>
+      <button class="modecard" onclick="startExam(20,20)">
+        <div class="mt">Quick set</div><div class="md">20 questions · 20 minutes · a fast check-in</div>
+        <span class="mgo">Start quick set →</span>
+      </button>
+    </div>
+  </section>
+
+  <section id="exam" class="hidden">
+    <div class="exhead"><div class="exbar">
+      <div class="timer" id="timer"><span class="tl">Time left</span><span id="timerval">50:00</span></div>
+      <div class="spacer"></div>
+      <div class="exprog">Question <b id="curnum">1</b> / <span id="totnum">50</span> &nbsp;·&nbsp; <span id="ansnum">0</span> answered</div>
+      <button class="btn primary" id="submitbtn" onclick="askSubmit()">Submit exam</button>
+    </div></div>
+    <div class="qcard">
+      <div class="qmeta"><span class="qtag" id="qtag">D1</span><span class="qnum" id="qnum">Question 1</span>
+        <button class="flagbtn" id="flagbtn" onclick="toggleFlag()">⚑ Flag</button></div>
+      <p class="qtext" id="qtext">—</p>
+      <div class="opts" id="opts"></div>
+    </div>
+    <div id="confirmbox"></div>
+    <div class="navrow">
+      <button class="btn ghost" id="prevbtn" onclick="go(-1)">← Previous</button>
+      <div class="spacer"></div>
+      <button class="btn" id="nextbtn" onclick="go(1)">Next →</button>
+    </div>
+    <div class="palette">
+      <div class="pt"><span><span class="swatch a"></span> Answered</span><span><span class="swatch"></span> Unanswered</span><span><span class="swatch f"></span> Flagged</span></div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <section id="results" class="hidden">
+    <div class="verdict" id="verdict"><p class="big" id="scorebig">0%</p><div class="lbl" id="verdictlbl">—</div><div class="meta" id="verdictmeta">—</div></div>
+    <div class="breakdown" id="breakdown"></div>
+    <div class="revcontrols"><span class="rt">Review answers</span>
+      <button class="chip on" id="chip-all" onclick="setFilter('all')">All</button>
+      <button class="chip" id="chip-wrong" onclick="setFilter('wrong')">Incorrect only</button>
+      <button class="chip" id="chip-flag" onclick="setFilter('flag')">Flagged</button></div>
+    <div id="review"></div>
+    <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;">
+      <button class="btn primary" onclick="location.reload()">Take another exam</button>
+      <button class="btn ghost" onclick="backToTop()">Back to top</button>
+    </div>
+  </section>
+</div>
+
+<script>
+const DOMAINS = {
+  D1:"IT Support Job Tasks & Responsibilities", D2:"Hardware Issues", D3:"Connectivity & Resource Access",
+  D4:"OS & Application Issues", D5:"Common Threats & Preventions", D6:"Job Tools & Professionalism"
+};
+const POOL = [
+  // D1 Job Tasks
+  {d:"D1",q:"What does an SLA define in a support environment?",o:["The agreed response and resolution time targets","The brand of ticketing software","The physical layout of the help desk","The salary of support staff"],a:0,e:"A Service-Level Agreement sets the response/resolution targets the team commits to."},
+  {d:"D1",q:"A Tier 1 technician is well past the time budget on a complex issue they can't solve. The best action is to:",o:["Keep trying until it's fixed","Close it as unresolvable","Escalate it to a higher tier with documentation","Delete it and ask the user to call back"],a:2,e:"Knowing when to escalate — with clear documentation — is a core help-desk responsibility."},
+  {d:"D1",q:"Which best describes triaging a ticket queue?",o:["Handling tickets strictly in order received","Ranking tickets by urgency and business impact","Assigning every ticket to Tier 3","Auto-closing low-priority tickets"],a:1,e:"Triage prioritizes by urgency and impact, not first-come-first-served."},
+  {d:"D1",q:"Good ticket documentation should include:",o:["Only the final resolution","The problem, the steps taken, and the results","A personal opinion of the user","The technician's schedule"],a:1,e:"Clear, factual documentation of problem, steps, and results makes the record reusable."},
+  {d:"D1",q:"KPIs such as first-contact resolution and average handle time are used to:",o:["Measure and improve support performance","Encrypt user data","Assign IP addresses","Replace the ticketing system"],a:0,e:"KPIs measure support quality and show whether SLAs are being met."},
+  {d:"D1",q:"A ticketing system primarily serves as the:",o:["System of record for requests, status, and history","Company firewall","Backup server","Email spam filter"],a:0,e:"It tracks each request's status, ownership, and history so work is auditable and transferable."},
+  {d:"D1",q:"When two fixes are both technically valid, the better exam answer usually:",o:["Skips documentation to save time","Respects process — escalate, document, get consent, protect data","Chooses the most expensive option","Avoids involving the user"],a:1,e:"Scenario questions reward proper process and good service conduct."},
+  {d:"D1",q:"The first step of a structured problem-solving process is to:",o:["Reboot everything","Clearly define/identify the problem","Replace the hardware","Escalate immediately"],a:1,e:"You must define the problem and gather details before theorizing a cause."},
+  {d:"D1",q:"Documenting a resolved ticket thoroughly is important mainly because it:",o:["Fills time","Is useful for future interactions and the next technician","Impresses the user","Is required by law everywhere"],a:1,e:"Good documentation makes future troubleshooting faster and knowledge transferable."},
+  {d:"D1",q:"Effective time management on a busy queue means:",o:["Spending unlimited time on the first ticket","Avoiding over-investing in one ticket at the expense of the queue","Ignoring SLAs","Closing tickets without resolving them"],a:1,e:"Technicians balance many tickets and escalate rather than stall the whole queue."},
+  // D2 Hardware
+  {d:"D2",q:"Before handling internal PC components, a technician should:",o:["Wear an anti-static (ESD) wrist strap","Leave the PC plugged in for grounding","Open the power supply first","Remove all humidity from the room"],a:0,e:"An ESD strap prevents electrostatic discharge that can silently damage components."},
+  {d:"D2",q:"Which port carries BOTH digital video and audio and is standard on modern displays?",o:["VGA","DVI","HDMI","PS/2"],a:2,e:"HDMI (and DisplayPort) carry digital video + audio; VGA is analog video only."},
+  {d:"D2",q:"A device that actively changes the signal type — e.g. HDMI to VGA — is a:",o:["Adapter","Converter","Splitter","Hub"],a:1,e:"A converter changes the signal (digital↔analog); an adapter only changes connector shape."},
+  {d:"D2",q:"A PC powers on but shows no display and emits POST beep codes. This indicates:",o:["A DNS misconfiguration","A hardware fault found during power-on self-test","A full hard drive","An expired SLA"],a:1,e:"POST checks hardware at boot; beep codes identify the failed component (often RAM/GPU)."},
+  {d:"D2",q:"Print jobs are stuck and nothing prints though the printer is online. A good early step is to:",o:["Replace the printer","Clear the print queue","Reinstall the OS","Reset the user's password"],a:1,e:"Clearing a stuck print queue is a standard quick fix."},
+  {d:"D2",q:"Which storage device is fastest and has no moving parts?",o:["Spinning HDD","SSD/NVMe","Optical disc","Floppy disk"],a:1,e:"SSD/NVMe uses flash memory — much faster and more reliable than a spinning HDD."},
+  {d:"D2",q:"USB-C is notable because it:",o:["Is reversible and can carry data, video, and power","Only carries power","Is larger than USB-A","Works only with printers"],a:0,e:"USB-C is a reversible connector supporting data, video (alt-mode), and power delivery."},
+  {d:"D2",q:"Before installing a new CPU or RAM module, you must verify:",o:["The monitor brand","Form factor and compatibility (socket, RAM type/speed)","The Wi-Fi password","The user's email"],a:1,e:"Components must match the motherboard's form factor and compatibility specs."},
+  {d:"D2",q:"Which component should never be opened due to electrical-shock risk?",o:["The RAM module","The power supply unit (PSU)","The keyboard","The network card"],a:1,e:"A PSU can hold a dangerous charge; never open it — replace it as a unit."},
+  {d:"D2",q:"A laptop battery is visibly swollen. The correct action is to:",o:["Keep using it until it dies","Replace it immediately as a safety hazard","Charge it fully first","Puncture it to release pressure"],a:1,e:"A swollen battery is a fire/safety hazard and must be replaced immediately."},
+  {d:"D2",q:"The VGA port carries:",o:["Analog video only","Digital video and audio","Only audio","Network data"],a:0,e:"VGA is a legacy analog video connector with no audio."},
+  // D3 Connectivity
+  {d:"D3",q:"A workstation reports a 169.254.x.x address. This means:",o:["It has a valid public IP","DHCP failed and APIPA self-assigned an address","IPv6 is disabled","It is connected by fiber"],a:1,e:"169.254.0.0/16 is APIPA — the host couldn't reach a DHCP server."},
+  {d:"D3",q:"A user can ping websites by IP but not by name. The most likely cause is:",o:["A DNS problem","A failed power supply","A duplex mismatch","An expired SLA"],a:0,e:"If IP works but names don't resolve, DNS is the prime suspect."},
+  {d:"D3",q:"Which four settings does a host typically need to reach the internet?",o:["Hostname, MAC, VLAN, SSID","IP address, subnet mask, default gateway, DNS server","CPU, RAM, disk, GPU","Username, password, PIN, token"],a:1,e:"An IP + mask, a default gateway to leave the subnet, and a DNS server to resolve names."},
+  {d:"D3",q:"Local devices are reachable but the internet is not. The likely misconfiguration is the:",o:["Default gateway","Monitor resolution","Printer driver","Keyboard layout"],a:0,e:"LAN works, so failing to reach outside the subnet points to a wrong/missing default gateway."},
+  {d:"D3",q:"Which command shows a Windows PC's IP address, mask, gateway, and DNS?",o:["ping","ipconfig","nslookup","tracert"],a:1,e:"ipconfig displays the full IP configuration on Windows (ifconfig/ip on macOS/Linux)."},
+  {d:"D3",q:"Compared to Wi-Fi, a wired LAN connection is generally:",o:["Slower and less reliable","Faster and more reliable","Only usable for printers","Unable to reach the internet"],a:1,e:"Wired Ethernet is typically faster and more stable than Wi-Fi."},
+  {d:"D3",q:"DHCP automatically provides a host with:",o:["Only a hostname","IP address, subnet mask, default gateway, and DNS","A MAC address","A monitor driver"],a:1,e:"DHCP leases the IP configuration (address, mask, gateway, DNS) automatically."},
+  {d:"D3",q:"Which command is used to verify that DNS name resolution is working?",o:["nslookup","chkdsk","format","ping -t only"],a:0,e:"nslookup queries DNS to confirm a name resolves to an IP."},
+  {d:"D3",q:"A device has no link light and nothing connects. The problem is most likely at the:",o:["Application layer","Physical layer (cable, port, or NIC)","DNS server","Cloud provider"],a:1,e:"No link light points to a physical-layer fault: cable, port, or NIC."},
+  {d:"D3",q:"A user on Wi-Fi has a weak, intermittent connection. A likely cause is:",o:["Interference, distance, or channel congestion","A dead CPU","A missing printer driver","An expired SLA"],a:0,e:"Wireless quality is affected by range, physical obstructions, and interference/congestion."},
+  // D4 OS & App
+  {d:"D4",q:"On macOS, which tool is the equivalent of Windows Task Manager for viewing and ending processes?",o:["Finder","Activity Monitor","Disk Utility","Time Machine"],a:1,e:"Activity Monitor shows processes and resource use on macOS."},
+  {d:"D4",q:"Which Apple tool creates full local/networked backups a user can restore from?",o:["iCloud only","Time Machine","BitLocker","Event Viewer"],a:1,e:"Time Machine performs full backups; iCloud syncs/restores personal data in the cloud."},
+  {d:"D4",q:"A user's phone won't charge. A good first troubleshooting step is to:",o:["Factory reset it immediately","Check the cable, adapter, and port for debris","Replace the battery","Escalate to the security team"],a:1,e:"Start with the simplest causes: a known-good cable/adapter and a clean charging port."},
+  {d:"D4",q:"MDM (Mobile Device Management) primarily allows an organization to:",o:["Enforce policy, push apps/config, and remotely wipe devices","Replace SIM cards remotely","Increase battery capacity","Bypass any user's passcode"],a:0,e:"MDM centrally manages devices — policy, app/config deployment, and remote wipe."},
+  {d:"D4",q:"An application crashes on launch. Which is the best early step?",o:["Reimage the whole computer","Check for app updates and verify system requirements","Replace the motherboard","Reset the network switch"],a:1,e:"Start low-impact: update the app, confirm compatibility/permissions, then repair/reinstall."},
+  {d:"D4",q:"Where can a Windows user see their IPv4 address without a command line?",o:["Settings > Network & Internet","Device Manager","Disk Management","Event Viewer"],a:0,e:"Settings > Network & Internet shows adapter details including the IPv4 address."},
+  {d:"D4",q:"On macOS, Force Quit is used to:",o:["Encrypt the disk","Close a frozen/unresponsive application","Reset the SMC","Update the firmware"],a:1,e:"Force Quit ends an unresponsive app, similar to ending a task on Windows."},
+  {d:"D4",q:"The main purpose of Windows Update is to:",o:["Apply patches and security updates","Defragment the display","Manage user tickets","Configure the BIOS"],a:0,e:"Windows Update delivers OS patches and security fixes; many issues resolve after updating."},
+  {d:"D4",q:"iCloud primarily provides:",o:["Cloud backup and sync of personal data across devices","A local-only disk image","A firewall service","A DNS server"],a:0,e:"iCloud syncs and backs up personal data to Apple's cloud for restore across devices."},
+  {d:"D4",q:"Windows Device Manager is used to:",o:["Manage hardware devices and their drivers","Read email","Configure the router","Track help-desk tickets"],a:0,e:"Device Manager lists hardware and lets you update, roll back, or disable drivers."},
+  // D5 Threats
+  {d:"D5",q:"An email urgently asks a user to 'verify your password' via a link to an unfamiliar site. This is:",o:["Spam only","A phishing attempt","A hardware failure","A DNS error"],a:1,e:"Phishing uses fraudulent messages/links to trick users into revealing credentials."},
+  {d:"D5",q:"After identifying a likely phishing email, the frontline technician should:",o:["Click the link to test it","Forward it to all colleagues as a warning","Perform a basic investigation and escalate to the security team","Delete it and say nothing"],a:2,e:"Frontline support investigates briefly then escalates/reports — it contains and reports."},
+  {d:"D5",q:"Faking a trusted identity — a spoofed sender or a caller pretending to be IT — is called:",o:["Spoofing / impersonation","Patching","Encryption","Triage"],a:0,e:"Spoofing fakes a trusted identity; impersonation is the social-engineering form."},
+  {d:"D5",q:"Which is an example of PII that must be protected?",o:["A public press release","A user's Social Security number","The company's public website URL","A published product manual"],a:1,e:"PII such as an SSN must be safeguarded per policy; public materials are not confidential."},
+  {d:"D5",q:"Which combination best helps PREVENT account compromise?",o:["Shared passwords and no updates","Strong passwords plus multi-factor authentication","Disabling antivirus","Granting all users admin rights"],a:1,e:"Strong unique passwords with MFA (plus least privilege and patching) are core preventive controls."},
+  {d:"D5",q:"Ransomware is malware that:",o:["Speeds up the computer","Encrypts data and demands payment for its release","Cleans temporary files","Improves Wi-Fi signal"],a:1,e:"Ransomware encrypts a victim's data and extorts payment for the decryption key."},
+  {d:"D5",q:"Spam is best described as:",o:["A hardware component","Bulk unwanted email, often a delivery vehicle for threats","A type of firewall","An encryption standard"],a:1,e:"Spam is unsolicited bulk email and is frequently used to deliver phishing or malware."},
+  {d:"D5",q:"The best FIRST response to a suspected phishing message is to:",o:["Click to confirm it's fake","Report/escalate it and avoid clicking","Reply asking who sent it","Forward it to friends"],a:1,e:"Report it through the proper channel and do not interact with its links or attachments."},
+  {d:"D5",q:"Company confidentiality guidelines exist mainly to:",o:["Slow down support","Protect user and company data by classifying and handling it correctly","Increase ticket volume","Replace antivirus"],a:1,e:"They define how to identify and protect confidential, proprietary, and PII data."},
+  {d:"D5",q:"An 'unauthorized access attempt' refers to:",o:["A scheduled backup","Someone trying to reach systems or data without permission","A software update","A routine password change"],a:1,e:"It is an attempt to access resources one has no rights to — a security event to report."},
+  // D6 Job Tools
+  {d:"D6",q:"Before starting a remote-access session on a user's computer, you should:",o:["Connect silently to save time","Obtain the user's consent and confirm the correct device","Share your admin password with them","Disable their antivirus"],a:1,e:"Always get consent and verify you're on the right machine; use secure, sanctioned tools."},
+  {d:"D6",q:"When resolving an unfamiliar issue, the best FIRST research source is usually:",o:["A random social post","The organization's internal knowledge base","Guessing and trying fixes","Rebuilding the computer"],a:1,e:"Check the vetted internal knowledge base first, then forums/search engines, evaluating sources."},
+  {d:"D6",q:"A key precaution when using generative AI tools for support is to:",o:["Paste confidential data freely","Trust every answer without checking","Verify output and avoid entering confidential data/PII","Use it only offline"],a:2,e:"Use AI as an aid but verify output, and never enter confidential info or PII."},
+  {d:"D6",q:"Explaining a fix to a non-technical user is best done by:",o:["Using as much jargon as possible","Using plain language matched to the audience","Refusing to explain","Reading the raw logs aloud"],a:1,e:"Professionals express technical concepts in plain language appropriate to the listener."},
+  {d:"D6",q:"Which tool provides persistent chat and video conferencing for collaboration?",o:["Cisco Webex","ipconfig","Time Machine","Device Manager"],a:0,e:"Collaboration platforms like Webex offer video, screen sharing, and persistent chat."},
+  {d:"D6",q:"Active listening in a support call means:",o:["Talking over the user to save time","Fully focusing on and confirming your understanding of the user's issue","Muting the user","Reading email while they talk"],a:1,e:"Active listening — attending fully and confirming understanding — improves service and accuracy."},
+  {d:"D6",q:"Predictive AI in IT support is used to:",o:["Anticipate issues by recognizing patterns in data","Encrypt hard drives","Assign IP addresses","Replace the help desk entirely"],a:0,e:"Predictive AI spots patterns to anticipate problems; generative AI drafts/summarizes."},
+  {d:"D6",q:"A technical forum is best used as:",o:["The single authoritative source for every fix","Community-sourced help to evaluate critically alongside official docs","A replacement for the knowledge base","A ticketing system"],a:1,e:"Forums offer useful community experience but should be weighed critically against vetted sources."},
+  {d:"D6",q:"Video conferencing tools help support by allowing:",o:["Screen sharing and real-time remote collaboration","Automatic hardware repair","Disk encryption","IP subnetting"],a:0,e:"They enable screen sharing and live collaboration with users and teammates."}
+];
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+let exam=null;
+function startExam(count, minutes){
+  const picked=shuffle(POOL).slice(0,Math.min(count,POOL.length));
+  const questions=picked.map(item=>{const order=shuffle(item.o.map((t,i)=>i));const opts=order.map(i=>item.o[i]);const correct=order.indexOf(item.a);return {d:item.d,q:item.q,opts,correct,e:item.e,chosen:null,flagged:false};});
+  exam={questions,idx:0,total:questions.length,timeLeft:minutes*60,timerId:null,submitted:false,_initial:minutes*60};
+  document.getElementById('start').classList.add('hidden');
+  document.getElementById('results').classList.add('hidden');
+  document.getElementById('exam').classList.remove('hidden');
+  document.getElementById('totnum').textContent=exam.total;
+  buildGrid(); renderQuestion(); startTimer(); window.scrollTo(0,0);
+}
+function startTimer(){ updateTimer(); exam.timerId=setInterval(()=>{ exam.timeLeft--; updateTimer(); if(exam.timeLeft<=0){ clearInterval(exam.timerId); doSubmit(true);} },1000); }
+function updateTimer(){ const m=Math.floor(exam.timeLeft/60),s=exam.timeLeft%60; document.getElementById('timerval').textContent=m+':'+String(s).padStart(2,'0'); document.getElementById('timer').classList.toggle('warn',exam.timeLeft<=300); }
+function renderQuestion(){
+  const Q=exam.questions[exam.idx];
+  document.getElementById('qtag').textContent=Q.d; document.getElementById('qtag').title=DOMAINS[Q.d];
+  document.getElementById('qnum').textContent='Question '+(exam.idx+1); document.getElementById('curnum').textContent=exam.idx+1;
+  document.getElementById('qtext').textContent=Q.q;
+  const flag=document.getElementById('flagbtn'); flag.classList.toggle('on',Q.flagged); flag.innerHTML=Q.flagged?'⚑ Flagged':'⚑ Flag';
+  const box=document.getElementById('opts'); box.innerHTML=''; const L=['A','B','C','D','E'];
+  Q.opts.forEach((t,i)=>{ const b=document.createElement('button'); b.className='opt'+(Q.chosen===i?' sel':''); b.type='button';
+    b.innerHTML=`<span class="key">${L[i]}</span><span>${t}</span>`; b.onclick=()=>{Q.chosen=i;renderQuestion();updateGridCell(exam.idx);updateAnsCount();}; box.appendChild(b); });
+  document.getElementById('prevbtn').disabled=exam.idx===0; document.getElementById('nextbtn').disabled=exam.idx===exam.total-1;
+  document.getElementById('confirmbox').innerHTML=''; markCurrent();
+}
+function go(d){ const n=exam.idx+d; if(n>=0&&n<exam.total){exam.idx=n;renderQuestion();} }
+function toggleFlag(){ const Q=exam.questions[exam.idx]; Q.flagged=!Q.flagged; renderQuestion(); updateGridCell(exam.idx); }
+function buildGrid(){ const g=document.getElementById('grid'); g.innerHTML=''; exam.questions.forEach((Q,i)=>{const c=document.createElement('button');c.className='pcell';c.type='button';c.textContent=i+1;c.id='pc-'+i;c.onclick=()=>{exam.idx=i;renderQuestion();};g.appendChild(c);}); exam.questions.forEach((Q,i)=>updateGridCell(i)); markCurrent(); }
+function updateGridCell(i){ const Q=exam.questions[i],c=document.getElementById('pc-'+i); c.classList.toggle('answered',Q.chosen!==null); c.classList.toggle('flagged',Q.flagged); }
+function markCurrent(){ exam.questions.forEach((Q,i)=>document.getElementById('pc-'+i).classList.toggle('current',i===exam.idx)); }
+function updateAnsCount(){ document.getElementById('ansnum').textContent=exam.questions.filter(q=>q.chosen!==null).length; }
+function askSubmit(){
+  const un=exam.questions.filter(q=>q.chosen===null).length; const box=document.getElementById('confirmbox');
+  const msg=un>0?`You have <b>${un}</b> unanswered question${un>1?'s':''}. Unanswered questions are counted as incorrect.`:`Ready to submit and see your score?`;
+  box.innerHTML=`<div class="confirm">${msg}<div class="cbtns"><button class="btn primary" onclick="doSubmit(false)">Submit exam</button><button class="btn ghost" onclick="document.getElementById('confirmbox').innerHTML=''">Keep working</button></div></div>`;
+  box.scrollIntoView({behavior:'smooth',block:'center'});
+}
+let reviewFilter='all';
+function doSubmit(timeUp){
+  if(exam.submitted)return; exam.submitted=true; if(exam.timerId)clearInterval(exam.timerId);
+  const correct=exam.questions.filter(q=>q.chosen===q.correct).length; const pct=Math.round(correct/exam.total*100); const pass=pct>=70;
+  document.getElementById('exam').classList.add('hidden'); document.getElementById('results').classList.remove('hidden');
+  const v=document.getElementById('verdict'); v.className='verdict '+(pass?'pass':'fail');
+  document.getElementById('scorebig').textContent=pct+'%'; document.getElementById('verdictlbl').textContent=pass?'PASS':'NOT YET';
+  document.getElementById('verdictmeta').innerHTML=`<b>${correct}</b> of <b>${exam.total}</b> correct · pass mark 70%`+(timeUp?' · <b>time expired</b>':'')+` · time used <b>${fmtUsed()}</b>`;
+  buildBreakdown(); setFilter('all'); window.scrollTo(0,0);
+}
+function fmtUsed(){ const used=exam._initial-exam.timeLeft; const m=Math.floor(used/60),s=used%60; return m+':'+String(s).padStart(2,'0'); }
+function buildBreakdown(){
+  const agg={}; Object.keys(DOMAINS).forEach(k=>agg[k]={c:0,t:0});
+  exam.questions.forEach(q=>{agg[q.d].t++; if(q.chosen===q.correct)agg[q.d].c++;});
+  let html='<h3>By domain</h3>';
+  Object.keys(DOMAINS).forEach(k=>{ if(agg[k].t===0)return; const pct=Math.round(agg[k].c/agg[k].t*100);
+    html+=`<div class="brow"><div class="bn">${DOMAINS[k]}</div><div class="bbar"><div class="bfill" style="width:${pct}%;background:${pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)'}"></div></div><div class="bsc">${agg[k].c}/${agg[k].t}</div></div>`; });
+  document.getElementById('breakdown').innerHTML=html;
+}
+function setFilter(f){ reviewFilter=f; ['all','wrong','flag'].forEach(x=>document.getElementById('chip-'+x).classList.toggle('on',x===f)); renderReview(); }
+function renderReview(){
+  const L=['A','B','C','D','E']; const wrap=document.getElementById('review'); wrap.innerHTML=''; let shown=0;
+  exam.questions.forEach((Q,i)=>{ const ok=Q.chosen===Q.correct;
+    if(reviewFilter==='wrong'&&ok)return; if(reviewFilter==='flag'&&!Q.flagged)return; shown++;
+    const optHtml=Q.opts.map((t,oi)=>{ let cls='opt',mk=''; if(oi===Q.correct){cls+=' correct';mk='<span class="mk">✓ correct</span>';} else if(oi===Q.chosen){cls+=' wrong';mk='<span class="mk">✗ your pick</span>';} return `<div class="${cls}"><span class="key">${L[oi]}</span><span>${t}</span>${mk}</div>`; }).join('');
+    const pick=Q.chosen===null?'Left blank':('You chose '+L[Q.chosen]);
+    wrap.innerHTML+=`<div class="rev-q"><div class="qmeta"><span class="qtag" title="${DOMAINS[Q.d]}">${Q.d}</span><span class="qnum">Question ${i+1}</span>${Q.flagged?'<span class="flagbtn on" style="margin-left:auto;pointer-events:none;">⚑ Flagged</span>':''}</div><p class="qtext">${Q.q}</p><div class="opts">${optHtml}</div><div class="yourpick">${pick}${ok?' · correct':(Q.chosen!==null?' · incorrect':'')}</div><div class="explain"><b>Why:</b> ${Q.e}</div></div>`; });
+  if(shown===0) wrap.innerHTML='<p style="color:var(--muted);font-size:14px;">Nothing to show for this filter — nice work.</p>';
+}
+function backToTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
+</script>
+</body>
+</html>
